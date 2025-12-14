@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Regolamento — Skillboll Survivor Train</title>
+
+  <style>
+    :root{
+      --text: #eef3ff;
+      --muted: rgba(238,243,255,0.85);
+      --nav: rgba(10, 16, 24, 0.78);
+      --border: rgba(255,255,255,0.12);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      height: 100%;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+    }
+
+    body{
+      background-color: #05070b;
+      background-image: url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
+      background-size: cover;
+      background-position: center 5%;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    /* Navbar */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      background: var(--nav);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+    .brand .dot{ font-size: 18px; }
+    .menu{
+      display:flex; gap:18px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .menu a{
+      color: var(--text);
+      text-decoration:none;
+      opacity:.9;
+      font-weight:600;
+      padding:8px 10px;
+      border-radius:10px;
+    }
+    .menu a:hover{ background: rgba(255,255,255,0.08); opacity: 1; }
+
+    /* Layout */
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 24px 48px;
+    }
+
+    .section{
+      margin-top: 18px;
+      padding: 22px 26px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 14px 46px rgba(0,0,0,0.28);
+    }
+
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -0.6px;
+      line-height: 1.1;
+    }
+    h2{
+      margin: 22px 0 10px;
+      font-size: 22px;
+      letter-spacing: -0.2px;
+    }
+    h3{
+      margin: 14px 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.15px;
+    }
+    p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: none; /* usa tutta la larghezza del box */
+    }
+
+    /* Singola riga (solo dove serve) */
+    .nowrap{ white-space: nowrap; max-width: none; }
+
+
+    /* Liste */
+    .bullets{
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      max-width: none;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .bullets li{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .bullets .icon{ width: 22px; opacity: .95; }
+
+    /* Dettagli */
+    details{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+    summary{
+      cursor: pointer;
+      font-weight: 900;
+      opacity: .98;
+    }
+    summary:hover{ opacity: 1; }
+    .note{
+      font-size: 13px;
+      opacity: .85;
+      margin-top: 10px;
+    }
+
+    /* Tabelle responsive */
+    .table-wrap{
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.18);
+      margin-top: 10px;
+    }
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+    th, td{
+      text-align: left;
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      vertical-align: top;
+    }
+    th{
+      font-size: 13px;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+      opacity: .85;
+    }
+
+    /* Bottoni */
+    .btn-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 800;
+      opacity: .95;
+    }
+    .btn:hover{ opacity: 1; background: rgba(255,255,255,0.12); }
+    .btn.primary{
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255, 200, 60, 0.16);
+    }
+    .btn.primary:hover{ background: rgba(255, 200, 60, 0.22); }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.22);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 520px){
+      body{ background-attachment: scroll; background-position: center 8%; }
+      .wrap{ padding: 14px 14px 40px; }
+      .menu{ gap: 8px; }
+      .menu a{ padding: 8px 8px; }
+      table{ min-width: 720px; }
+      .btn{ width: 100%; }
+      .nowrap{ white-space: normal; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="nav">
+    <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="regolamento.html">Regolamento</a>
+      <a href="classifica.html">Classifica</a>
+      <a href="ricarica.html">Ricarica vite</a>
+    </nav>
+  </header>
+
+  <main class="wrap" id="top">
+    <section class="section">
+      <h1>📜 Regolamento ufficiale</h1>
+      <p>
+        Questo regolamento disciplina lo <strong>Skillboll Survivor Train</strong> per la stagione 2025/2026. È il riferimento valido per tutta l’edizione.
+      </p>
+
+
+      <!-- 1 -->
+      <h2 id="p1">🎯 Cos’è lo Skillboll Survivor Train</h2>
+      <p>
+        Lo Skillboll Survivor Train è una competizione sportiva basata sui pronostici delle partite di Serie A, in cui ogni concorrente
+        dispone di una o più vite e deve sopravvivere il più a lungo possibile pronosticando correttamente le squadre vincenti.
+        Ogni vittoria fa guadagnare un punteggio variabile stabilito dall’app Skillboll.
+      </p>
+      <p>
+        I punti assegnati a ciascuna squadra sono <strong>visibili e consultabili prima</strong> di effettuare la giocata,
+        così che ogni concorrente possa valutare difficoltà e rischio della scelta.
+      </p>
+      <p><strong>Obiettivo:</strong> resistere più a lungo possibile e totalizzare più punti degli altri concorrenti.</p>
+
+      <!-- 2 -->
+      <h2 id="p2">📆 Struttura delle edizioni</h2>
+      <p>
+        Ogni stagione calcistica di Serie A corrisponde a un’edizione completa dello Skillboll Survivor Train, suddivisa in due competizioni distinte,
+        entrambe basate sull’accumulo di punti ottenuti attraverso le vite giocate.
+      </p>
+
+      <details open>
+        <summary>⚙️ A) Edizione d’Andata</summary>
+        <ul class="bullets">
+          <li><span class="icon">▶️</span> Inizia con la <strong>1ª giornata</strong> di Serie A.</li>
+          <li><span class="icon">📊</span> Ogni giornata assegna punti in base alle vite giocate e alle vittorie ottenute.</li>
+          <li><span class="icon">⛔</span> La competizione termina quando rimane un solo concorrente con almeno una vita attiva, oppure quando tutti i concorrenti perdono tutte le vite disponibili.</li>
+          <li><span class="icon">🏆</span> Vince il giocatore con il punteggio più alto tra gli ultimi superstiti (in caso di eliminazione collettiva prevale chi ha totalizzato più punti complessivi fino a quel momento).</li>
+        </ul>
+        <p class="note">
+          👉 In caso di parità di punti nelle posizioni a premio, i montepremi dei classificati coinvolti vengono sommati e divisi in parti uguali tra i giocatori a pari punteggio.
+          👉 Nel girone d’andata non si applica lo spareggio basato sulle vite potenziali.
+        </p>
+      </details>
+
+      <details open>
+        <summary>⚙️ B) Edizione di Ritorno</summary>
+        <ul class="bullets">
+          <li><span class="icon">▶️</span> Inizia alla <strong>19ª giornata</strong> di Serie A.</li>
+          <li><span class="icon">📊</span> Stesso sistema di punteggio dell’edizione d’andata.</li>
+          <li><span class="icon">🏁</span> Termina obbligatoriamente alla <strong>38ª giornata</strong>.</li>
+          <li><span class="icon">🏆</span> Vince chi totalizza il maggior numero di punti.</li>
+        </ul>
+      </details>
+
+      <details open>
+        <summary>⚖️ C) Criterio di spareggio (solo per l’edizione di ritorno)</summary>
+        <p>
+          In caso di parità di punti totali al termine del girone di ritorno (38ª giornata), vince il concorrente con più
+          <strong>vite potenzialmente disponibili</strong>, anche se non acquistate.
+        </p>
+        <p><strong>Esempio:</strong></p>
+        <ul class="bullets">
+          <li><span class="icon">👤</span> Marco: acquista 5 vite e le perde tutte → nessuna vita disponibile.</li>
+          <li><span class="icon">👤</span> Sofia: acquista 3 vite, le perde tutte e poi acquista 1 vita (4 in totale) → le restano 2 vite disponibili.</li>
+        </ul>
+        <p class="note">
+          👉 Vince Sofia perché ha un margine teorico di vite maggiore rispetto al limite massimo di 5. Questa regola si applica anche a tutte le altre posizioni a premio e ai premi progressivi, in caso di parità.
+        </p>
+      </details>
+
+      <!-- 3 -->
+      <h2 id="p3">❤️ Le vite</h2>
+      <ul class="bullets">
+        <li><span class="icon">🎟️</span> Ogni giocatore può iniziare con 1, 3 o 5 vite.</li>
+        <li><span class="icon">1️⃣</span> Ogni giornata si gioca una sola vita.</li>
+        <li><span class="icon">✅</span> Se la squadra scelta vince, la vita prosegue.</li>
+        <li><span class="icon">❌</span> Se pareggia o perde, la vita è persa definitivamente.</li>
+        <li><span class="icon">🚪</span> Quando un concorrente perde tutte le vite, è eliminato.</li>
+        <li><span class="icon">🔁</span> È possibile rientrare acquistando nuove vite, fino a un massimo di 5 vite totali per edizione.</li>
+        <li><span class="icon">⏱️</span> Le vite riacquistate possono essere acquistate esclusivamente prima del turno successivo all’eliminazione. Dopo l’inizio della nuova giornata, il rientro non è più consentito.</li>
+      </ul>
+
+      <!-- 4 -->
+      <h2 id="p4">💸 Quote di iscrizione e rientri</h2>
+      <div class="table-wrap" role="region" aria-label="Quote e pacchetti" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Pacchetto</th>
+              <th>Costo</th>
+              <th>Vite iniziali</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1 Vita</td><td>10€</td><td>1</td></tr>
+            <tr><td>3 Vite</td><td>20€</td><td>3</td></tr>
+            <tr><td>5 Vite</td><td>30€</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        <strong>Rientri:</strong> 10€ per ogni nuova vita, fino al massimo di 5 totali.<br>
+        <strong>Pagamento:</strong> PayPal con causale:
+        <span class="kbd">[Nome squadra] – Iscrizione Survivor Train</span>
+        oppure
+        <span class="kbd">[Nome squadra] – N° Vite</span><br>
+        Link: <span class="kbd">https://www.paypal.me/SurvivorTrain</span>
+      </p>
+
+      <!-- 5 -->
+      <h2 id="p5">🎁 Bonus Inviti – Vita Extra</h2>
+      <p>
+        È previsto un bonus per chi contribuisce alla crescita della community:
+        ogni giocatore che porta <strong>5 nuovi partecipanti iscritti</strong> all’edizione ottiene 1 vita extra gratuita sul proprio pacchetto iniziale.
+      </p>
+
+      <details open>
+        <summary>Regole obbligatorie per la validità del bonus</summary>
+        <ol>
+          <li>I 5 partecipanti invitati devono indicare nella causale PayPal:
+            <span class="kbd">[Nome squadra] – Iscrizione Survivor Train - invitato da [Nome squadra invitante]</span>
+          </li>
+          <li>Tutti i pagamenti devono essere completati prima dell’inizio della competizione.</li>
+          <li>Il bonus viene caricato esclusivamente all’inizio dell’edizione, non durante lo svolgimento.</li>
+          <li>Anche con la vita bonus, non è possibile superare il limite massimo di 5 vite totali per edizione.</li>
+        </ol>
+        <p class="note">
+          ❗ Il bonus inviti non è cumulabile: anche portando 10, 15 o più persone → massimo 1 vita bonus.
+        </p>
+      </details>
+
+      <!-- 6 -->
+      <h2 id="p6">🧠 Modalità di gioco</h2>
+      <p>
+        Ogni concorrente deve pronosticare una sola squadra vincente per giornata, entro 15 minuti prima dell’inizio della giornata di Serie A.
+      </p>
+      <ul class="bullets">
+        <li><span class="icon">🚫</span> Non si può puntare due volte sulla stessa squadra nella stessa edizione, salvo che tutte le altre squadre siano già state utilizzate dall’utente.</li>
+      </ul>
+
+      <!-- 7 -->
+      <h2 id="p7">🕐 Scadenze e giocate automatiche</h2>
+      <ul class="bullets">
+        <li><span class="icon">🤖</span> Se un concorrente non effettua la giocata entro il limite stabilito, il sistema giocherà automaticamente la prima squadra disponibile in ordine alfabetico.</li>
+      </ul>
+
+      <!-- 8 -->
+      <h2 id="p8">⚽ Esiti delle partite</h2>
+      <ul class="bullets">
+        <li><span class="icon">✅</span> Se la squadra scelta vince, la vita è salvata.</li>
+        <li><span class="icon">❌</span> Se pareggia o perde, la vita è persa definitivamente.</li>
+        <li><span class="icon">🔁</span> In caso di rinvii o sospensioni si applicano le regole del punto successivo.</li>
+      </ul>
+
+      <!-- 9 -->
+      <h2 id="p9">🔁 Partite rinviate o sospese</h2>
+      <details open>
+        <summary>CASO A – Rinvio comunicato ENTRO la mezzanotte del giorno precedente</summary>
+        <ul class="bullets">
+          <li><span class="icon">↩️</span> Se non viene recuperato entro la giornata successiva → giocate annullate e rifacibili.</li>
+          <li><span class="icon">✅</span> Se viene recuperato entro tale termine → giocate valide.</li>
+        </ul>
+      </details>
+
+      <details open>
+        <summary>CASO B – Rinvio comunicato DOPO la mezzanotte del giorno precedente</summary>
+        <ul class="bullets">
+          <li><span class="icon">✅</span> Se recuperato entro la giornata successiva → giocate valide.</li>
+          <li><span class="icon">🎁</span> Se non recuperato → giocate considerate vincenti e la squadra non sarà più utilizzabile in seguito.</li>
+        </ul>
+      </details>
+
+      <!-- 10 -->
+      <h2 id="p10">🧩 Classifica Ufficiale</h2>
+      <p>
+        Alla fine di ogni giornata di Serie A verrà pubblicata la Classifica Top 10 con:
+        <strong>Nome squadra</strong>, <strong>Vite disponibili</strong>, <strong>Punti totali</strong>.
+      </p>
+      <p class="note">
+        Insieme alla Top 10 verrà comunicato anche il numero totale di partecipanti ancora in gioco e il numero dei concorrenti eliminati definitivamente.
+        La classifica verrà aggiornata e pubblicata sul canale WhatsApp ufficiale Survivor Train.
+      </p>
+
+      <!-- 11 -->
+      <h2 id="p11">💰 Montepremi garantito e premi speciali</h2>
+      <p>Il montepremi cresce con il numero dei partecipanti e viene distribuito ai migliori classificati e ai traguardi punti secondo i criteri seguenti.</p>
+
+      <div class="table-wrap" role="region" aria-label="Montepremi garantito" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Partecipanti</th>
+              <th>Montepremi garantito</th>
+              <th>Divisione premi (Top 5)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>50 – 74</td><td>1.500€</td><td>🥇 700€ · 🥈 400€ · 🥉 200€ · 4° 120€ · 5° 80€</td></tr>
+            <tr><td>75 – 99</td><td>2.000€</td><td>🥇 900€ · 🥈 500€ · 🥉 300€ · 4° 180€ · 5° 120€</td></tr>
+            <tr><td>100 – 124</td><td>2.500€</td><td>🥇 1.100€ · 🥈 600€ · 🥉 400€ · 4° 250€ · 5° 150€</td></tr>
+            <tr><td>125 – 150</td><td>3.000€</td><td>🥇 1.300€ · 🥈 700€ · 🥉 500€ · 4° 300€ · 5° 200€</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <details>
+        <summary>🎁 Bonus Fedeltà – Dal 6° al 10° posto</summary>
+        <p>
+          I concorrenti dal 6° al 10° posto ricevono l’iscrizione gratuita alla prossima edizione (pacchetto base da 1 vita).
+        </p>
+        <p class="note">
+          👉 In caso di parità di punteggio, il premio fedeltà va a chi ha più vite disponibili; in ulteriore parità, a chi ha partecipato a più giornate.
+        </p>
+      </details>
+
+      <details open>
+        <summary>🎯 Premi progressivi – Obiettivi punti</summary>
+        <div class="table-wrap" role="region" aria-label="Premi progressivi" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Soglia punti</th>
+                <th>Premio immediato</th>
+                <th>Regola</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>100 punti</td><td>10€</td><td>al primo che supera la soglia</td></tr>
+              <tr><td>200 punti</td><td>20€</td><td>al primo che supera la soglia</td></tr>
+              <tr><td>300 punti</td><td>30€</td><td>al primo che supera la soglia</td></tr>
+              <tr><td>400 punti</td><td>40€</td><td>al primo che supera la soglia</td></tr>
+              <tr><td>500 punti</td><td>50€</td><td>al primo che supera la soglia</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="note">
+          💡 In caso di superamento simultaneo della stessa soglia: il premio va a chi totalizza più punti oltre la soglia.
+          In caso di ulteriore parità, il premio viene suddiviso equamente tra i giocatori, a prescindere dal numero di vite ancora disponibili.
+        </p>
+      </details>
+
+      <!-- 12 -->
+      <h2 id="p12">🧭 Spirito del gioco</h2>
+      <p>
+        Lo Skillboll Survivor Train è una corsa di intuizione, strategia e resistenza. Ogni giornata è una fermata. Ogni vita, un biglietto.
+      </p>
+      <p>
+        Solo chi gioca con intelligenza e sangue freddo arriverà fino alla fine del viaggio.
+      </p>
+      <p><strong>“Chi sbaglia scende. Chi resiste, arriva alla gloria.”</strong> 🚆🔥</p>
+
+      <!-- 13 -->
+      <h2 id="p13">📢 Comunicazioni ufficiali</h2>
+      <p>
+        Classifiche, risultati e aggiornamenti verranno pubblicati esclusivamente sui canali ufficiali:
+        <a class="kbd" href="https://chat.whatsapp.com/IvyTjZsgfjaF3rpfs726BS?mode=wwt" target="_blank" rel="noopener noreferrer">WhatsApp – Skillboll Survivor Train</a>
+      </p>
+
+      <!-- 14 -->
+      <h2 id="p14">⚖️ Amministrazione e Referee</h2>
+      <p>
+        La gestione tecnica e decisionale della competizione è affidata allo Staff Ufficiale Skillboll Survivor Train, che svolge funzione di referee.
+        Lo Staff ha il compito di:
+      </p>
+      <ul class="bullets">
+        <li><span class="icon">✅</span> verificare pagamenti e iscrizioni</li>
+        <li><span class="icon">✅</span> applicare il regolamento</li>
+        <li><span class="icon">✅</span> risolvere controversie</li>
+        <li><span class="icon">✅</span> convalidare risultati e rinvii</li>
+        <li><span class="icon">✅</span> assegnare premi e bonus</li>
+        <li><span class="icon">✅</span> gestire eventuali casi limite o non previsti</li>
+      </ul>
+      <p class="note"><strong>Tutte le decisioni dello Staff sono definitive e insindacabili.</strong></p>
+
+      <h3>📜 Credits ufficiali</h3>
+      <p class="note">
+        Documento redatto e approvato dallo Staff Ufficiale — Skillboll Survivor Train (Stagione 2025/2026) © 2025 — Tutti i diritti riservati.
+      </p>
+
+      <h3>✉️ Contatti</h3>
+      <p class="note">Per informazioni o assistenza: <strong>survivortrainservice@gmail.com</strong></p>
+
+      <div class="btn-row">
+        <!-- METTI QUI IL NOME ESATTO DEL PDF NELLA TUA CARTELLA (stesso livello di regolamento.html) -->
+        <a class="btn primary" href="Regolamento%20Survivor.pdf" download>Scarica regolamento (PDF)</a>
+        <a class="btn" href="#top">Torna su</a>
+      </div>
+
+    </section>
+  </main>
+</body>
+</html>

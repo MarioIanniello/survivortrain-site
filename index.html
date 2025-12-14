@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skillboll Survivor Train</title>
+  <style>
+    :root{
+      --text:#eef3ff;
+      --muted:rgba(238,243,255,0.85);
+      --nav:rgba(10,16,24,0.78);
+      --border:rgba(255,255,255,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
+    body{
+      background-image: url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
+      background-size:cover;
+      background-position:center 5%;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+    }
+
+    /* Navbar */
+    .nav{
+      position:sticky; top:0; z-index:10;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:14px 20px;
+      background:var(--nav);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(10px);
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+    .brand .dot{font-size:18px}
+    .menu{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
+    .menu a{
+      color:var(--text); text-decoration:none; opacity:.9;
+      font-weight:600; padding:8px 10px; border-radius:10px;
+    }
+    .menu a:hover{background:rgba(255,255,255,0.08);opacity:1}
+
+    /* Hero */
+    .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+    .hero{
+      margin-top:0;
+      padding:28px 48px 34px; /* compact hero */
+      max-height:62vh;
+      overflow:hidden;
+      display:flex;flex-direction:column;justify-content:flex-start;
+      border-radius:18px;
+      background:rgba(0,0,0,0.28);
+      border:1px solid var(--border);
+      backdrop-filter:blur(6px);
+      box-shadow:0 18px 60px rgba(0,0,0,0.35);
+    }
+    h1{
+      margin:0 0 12px;
+      font-size:clamp(34px,5vw,60px);
+      line-height:1.04;
+      letter-spacing:-0.8px;
+    }
+    .lead{
+      margin:0 0 20px;
+      font-size:clamp(16px,2vw,20px);
+      color:var(--muted);
+      line-height:1.45;
+      max-width:62ch;
+    }
+    .lead .line{display:block;white-space:nowrap}
+
+    .bullets{
+      margin:16px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:10px;
+      max-width:70ch;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.5;
+    }
+    .bullets li{display:flex;gap:10px;align-items:flex-start}
+    .bullets .icon{width:22px;opacity:.95}
+
+    @media (max-width:520px){
+      body{background-attachment:scroll;background-position:center 8%}
+      .wrap{padding:0 14px}
+      .hero{
+        padding:22px 18px 26px;
+        max-height:none;
+        overflow:visible;
+        border-radius:16px;
+      }
+      h1{
+        font-size:clamp(28px,9vw,40px);
+        line-height:1.06;
+        margin-bottom:12px;
+      }
+      .lead{max-width:100%}
+      .lead .line{white-space:normal}
+      .menu{gap:8px}
+      .menu a{padding:8px 8px}
+      .bullets{font-size:15px;gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="regolamento.html">Regolamento</a>
+      <a href="classifica.html">Classifica</a>
+      <a href="ricarica.html">Ricarica vite</a>
+    </nav>
+  </header>
+
+  <main class="wrap" id="home">
+    <section class="hero">
+      <h1>Ogni giornata è una fermata.<br>Ogni vita, un biglietto.</h1>
+
+      <p class="lead">
+        <span class="line">Competizione di strategia, intuito e resistenza basata sulla Serie A.</span>
+        <span class="line">Scegli una squadra vincente: se vince continui il viaggio, se pareggia o perde perdi una vita.</span>
+        <span class="line">Ogni partecipante ha a disposizione MAX 5 vite.</span>
+        <span class="line">Più resisti, più punti accumuli.</span>
+      </p>
+
+      <ul class="bullets">
+        <li><span class="icon">🎯</span> Ogni turno scegli una squadra vincente.</li>
+        <li><span class="icon">✅</span> Vittoria = resti in corsa e fai punti.</li>
+        <li><span class="icon">❌</span> Pareggio/sconfitta = perdi una vita.</li>
+        <li><span class="icon">🏁</span> Resisti, scala la classifica, punta ai premi.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
