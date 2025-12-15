@@ -73,6 +73,12 @@
       height: 32px;
       object-fit: contain;
     }
+    .emoji-logo{
+      font-size: 26px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
 
     .nav-actions{ position: relative; }
 
@@ -229,8 +235,7 @@
 <body>
   <header class="nav" id="top">
     <div class="brand">
-      <!-- Sostituisci 'logo.png' con il nome esatto del tuo logo (mettilo nella root del repo) -->
-      <img src="logo.png" alt="Survivor Train" />
+      <span class="emoji-logo" aria-hidden="true">🚆</span>
       <span>Survivor Train</span>
     </div>
 
