@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iscrizione — Survivor Train</title>
+
+  <style>
+    :root {
+      --text: #eef3ff;
+      --muted: rgba(238,243,255,0.85);
+      --nav: rgba(10, 16, 24, 0.78);
+      --border: rgba(255,255,255,0.12);
+      --card: rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background-image: url("bg.jpg");
+      background-size: cover;
+      background-position: center 5%;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    /* iOS fallback: fixed bg via pseudo-element */
+    @supports (-webkit-touch-callout: none) {
+      body { background: none; }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image: url("bg.jpg");
+        background-size: cover;
+        background-position: center 5%;
+        background-repeat: no-repeat;
+        transform: translateZ(0);
+      }
+    }
+
+    /* Navbar (hamburger) */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      background: var(--nav);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .brand img{
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .hamb{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 900;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .hamb:active{ transform: translateY(1px); }
+
+    .menu{
+      position: absolute;
+      right: 16px;
+      top: calc(100% + 10px);
+      min-width: 220px;
+      background: rgba(10, 16, 24, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: none;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+    }
+
+    .menu.open{ display: block; }
+
+    .menu a{
+      display: block;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      padding: 10px 10px;
+      border-radius: 10px;
+      opacity: .95;
+    }
+
+    .menu a:hover{ background: rgba(255,255,255,0.08); opacity: 1; }
+
+    /* Layout */
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 18px 54px;
+    }
+
+    .card{
+      padding: 22px 22px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+    }
+
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(24px, 4vw, 38px);
+      letter-spacing: -0.6px;
+      line-height: 1.12;
+    }
+
+    p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 78ch;
+    }
+
+    .steps{
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    .steps li{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+    }
+
+    .steps .icon{ width: 22px; opacity: .95; }
+
+    .btn-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      opacity: .95;
+      cursor: pointer;
+    }
+
+    .btn:hover{ opacity: 1; background: rgba(255,255,255,0.12); }
+
+    .btn.primary{
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255, 200, 60, 0.16);
+    }
+
+    .btn.primary:hover{ background: rgba(255, 200, 60, 0.22); }
+
+    .btn:disabled{
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .status{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      color: var(--muted);
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .mini{
+      margin-top: 12px;
+      font-size: 13px;
+      opacity: .78;
+    }
+
+    @media (max-width: 520px){
+      body{ background-attachment: scroll; background-position: center 8%; }
+      .wrap{ padding: 16px 14px 44px; }
+      .card{ padding: 18px 16px; }
+      .btn{ width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="nav" id="top">
+    <div class="brand">
+      <!-- Sostituisci 'logo.png' con il nome esatto del tuo logo (mettilo nella root del repo) -->
+      <img src="logo.png" alt="Survivor Train" onerror="this.style.display='none'" />
+      <span>Survivor Train</span>
+    </div>
+
+    <div style="position: relative;">
+      <button class="hamb" id="hamb" aria-label="Apri menu" aria-expanded="false">☰</button>
+      <nav class="menu" id="menu" aria-label="Menu">
+        <a href="index.html">HOME</a>
+        <a href="iscrizione.html">ISCRIZIONE</a>
+        <a href="regolamento.html">REGOLAMENTO</a>
+        <a href="classifica.html">CLASSIFICA</a>
+        <a href="ricarica.html">RICARICA VITE</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>Iscrizione & Accesso</h1>
+      <p>
+        Qui entri ufficialmente nel <strong>Survivor Train</strong>.
+        Accedi con Google: useremo questa email per collegare i tuoi dati (vite, ricariche, posizione, premi).
+      </p>
+
+      <ul class="steps">
+        <li><span class="icon">1️⃣</span> Accedi con Google.</li>
+        <li><span class="icon">2️⃣</span> Completa l’iscrizione (pacchetto, nome squadra, ecc.).</li>
+        <li><span class="icon">3️⃣</span> Vai nella tua area personale.</li>
+      </ul>
+
+      <div class="btn-row">
+        <button class="btn primary" id="btnGoogle">Accedi con Google</button>
+        <button class="btn" id="btnArea" disabled>Vai alla tua area</button>
+        <button class="btn" id="btnLogout" style="display:none;">Esci</button>
+      </div>
+
+      <div class="status" id="status">
+        Stato: non autenticato.
+      </div>
+
+      <div class="mini">
+        Nota: se è la prima volta che accedi, nel prossimo step collegheremo questa email al tuo profilo (nome squadra, pacchetto, ecc.).
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Menu hamburger
+    (function(){
+      const hamb = document.getElementById('hamb');
+      const menu = document.getElementById('menu');
+
+      function closeMenu(){
+        menu.classList.remove('open');
+        hamb.setAttribute('aria-expanded', 'false');
+      }
+
+      hamb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = menu.classList.toggle('open');
+        hamb.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      document.addEventListener('click', closeMenu);
+      window.addEventListener('scroll', closeMenu, { passive: true });
+    })();
+  </script>
+
+  <script type="module">
+    // ===============================
+    // FIREBASE AUTH (Google)
+    // ===============================
+    // 1) Crea un progetto Firebase
+    // 2) Attiva Authentication → Google
+    // 3) Aggiungi un'app Web e incolla qui la config
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    // >>> INCOLLA QUI LA TUA CONFIG (sostituisci TUTTO l'oggetto firebaseConfig)
+    const firebaseConfig = {
+     apiKey: "AIzaSyAs02ZYpiZDySuniLMnbvZfk-7jVZ6OPFI",
+     authDomain: "survivor-train.firebaseapp.com",
+     projectId: "survivor-train",
+     storageBucket: "survivor-train.firebasestorage.app",
+     messagingSenderId: "695404968672",
+     appId: "1:695404968672:web:779f8ae31d78218fee2e85"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const statusEl = document.getElementById('status');
+    const btnGoogle = document.getElementById('btnGoogle');
+    const btnArea = document.getElementById('btnArea');
+    const btnLogout = document.getElementById('btnLogout');
+
+    function setStatus(html){
+      statusEl.innerHTML = html;
+    }
+
+    btnGoogle.addEventListener('click', async () => {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        console.error(err);
+        setStatus(`❌ Errore login: <strong>${err?.message || err}</strong>`);
+      }
+    });
+
+    btnLogout.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error(err);
+        setStatus(`❌ Errore logout: <strong>${err?.message || err}</strong>`);
+      }
+    });
+
+    btnArea.addEventListener('click', () => {
+      // area.html la creeremo nel prossimo step
+      window.location.href = 'area.html';
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        btnArea.disabled = true;
+        btnLogout.style.display = 'none';
+        btnGoogle.style.display = 'inline-flex';
+        setStatus('Stato: non autenticato.');
+        return;
+      }
+
+      // Persistiamo dati minimi client-side (utile anche per debug)
+      const payload = {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName,
+        photo: user.photoURL,
+      };
+      localStorage.setItem('st_user', JSON.stringify(payload));
+
+      btnArea.disabled = false;
+      btnLogout.style.display = 'inline-flex';
+      btnGoogle.style.display = 'none';
+
+      setStatus(`✅ Autenticato come <strong>${user.displayName || 'Utente'}</strong><br><span style="opacity:.85;">${user.email || ''}</span>`);
+    });
+  </script>
+</body>
+</html>
