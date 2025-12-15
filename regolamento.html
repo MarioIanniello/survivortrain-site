@@ -15,7 +15,7 @@
 
     *{ box-sizing: border-box; }
     html, body{
-      height: 100%;
+      min-height: 100%;
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--text);
@@ -23,18 +23,42 @@
 
     body{
       background-color: #05070b;
+      /* Sfondo gestito da layer fisso per compatibilità iOS Safari */
+      background-image: none;
+      position: relative;
+      /* Crea uno stacking context stabile su Safari iOS (evita che il fixed “stia sopra”) */
+      isolation: isolate;
+    }
+
+    /* Background fisso cross-browser (iOS incluso) */
+    .bg-fixed{
+      position: fixed;
+      inset: 0;
+      /* Deve stare SEMPRE dietro al contenuto */
+      z-index: -1;
       background-image: url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
       background-size: cover;
       background-position: center 5%;
       background-repeat: no-repeat;
-      background-attachment: fixed;
+      pointer-events: none;
+      /* iOS Safari: forza compositing stabile */
+      -webkit-transform: translate3d(0,0,0);
+      transform: translate3d(0,0,0);
+    }
+
+    /* Leggero scurimento per mantenere leggibilità */
+    .bg-fixed::after{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.18);
     }
 
     /* Navbar */
     .nav{
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -43,6 +67,11 @@
       background: var(--nav);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
+    }
+    /* Assicura che contenuto e navbar stiano sopra il background su iOS */
+    .nav, .wrap{ 
+      position: relative;
+      z-index: 1;
     }
     .brand{
       display:flex; align-items:center; gap:10px;
@@ -79,6 +108,32 @@
       border: 1px solid var(--border);
       backdrop-filter: blur(6px);
       box-shadow: 0 14px 46px rgba(0,0,0,0.28);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Debug deploy marker (visibile solo per verifica) */
+    .deploy-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+      color: rgba(238,243,255,0.92);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 0 0 10px;
+    }
+    .deploy-badge .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 200, 60, 0.95);
+      box-shadow: 0 0 0 3px rgba(255, 200, 60, 0.18);
+      flex: 0 0 auto;
     }
 
     h1{
@@ -212,7 +267,7 @@
     }
 
     @media (max-width: 520px){
-      body{ background-attachment: scroll; background-position: center 8%; }
+      .bg-fixed{ background-position: center 8%; }
       .wrap{ padding: 14px 14px 40px; }
       .menu{ gap: 8px; }
       .menu a{ padding: 8px 8px; }
@@ -224,6 +279,8 @@
 </head>
 
 <body>
+  <!-- TEST PUSH -->
+  <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
     <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
     <nav class="menu">
@@ -237,6 +294,10 @@
   <main class="wrap" id="top">
     <section class="section">
       <h1>📜 Regolamento ufficiale</h1>
+      <div class="deploy-badge" aria-label="Verifica deploy">
+        <span class="dot" aria-hidden="true"></span>
+        DEPLOY CHECK — 2025-12-15
+      </div>
       <p>
         Questo regolamento disciplina lo <strong>Skillboll Survivor Train</strong> per la stagione 2025/2026. È il riferimento valido per tutta l’edizione.
       </p>
