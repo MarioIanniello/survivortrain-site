@@ -54,46 +54,50 @@
       background: rgba(0,0,0,0.18);
     }
 
-    /* Navbar */
+    /* NAVBAR (standard su tutte le pagine) */
     .nav{
       position: sticky;
       top: 0;
-      z-index: 2;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      /* Navbar più “alta” come su index */
-      min-height: 72px;
-      padding: 18px 16px;
-      background: var(--nav);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
+      min-height: 78px;
+      padding: 18px 18px;
+      background: rgba(8, 14, 22, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(14px);
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:12px;
       font-weight: 800;
-      letter-spacing: .2px;
+      letter-spacing: .3px;
       white-space: nowrap;
-      font-size: 20px;
+      font-size: 21px;
       line-height: 1;
     }
-    .brand .dot{ font-size: 22px; }
+
+    .brand .dot{
+      font-size: 24px;
+    }
 
     .hamburger{
       display:none;
       flex-direction:column;
-      gap:5px;
+      justify-content:center;
+      gap:6px;
       cursor:pointer;
       background: transparent;
       border: 0;
       padding: 10px;
-      margin: -10px; /* mantiene l'allineamento ma aumenta l'area cliccabile */
+      margin: -10px;
     }
+
     .hamburger span{
-      width:26px;
+      width:28px;
       height:2px;
       background: var(--text);
       border-radius:2px;
@@ -101,33 +105,40 @@
 
     .menu{
       display:flex;
-      gap:18px;
+      gap:20px;
     }
 
     .menu a{
       color: var(--text);
       text-decoration:none;
       font-weight:600;
-      padding:8px 10px;
-      border-radius:10px;
-      opacity:.9;
+      padding:9px 12px;
+      border-radius:12px;
+      opacity:.92;
     }
-    .menu a:hover{ background: rgba(255,255,255,0.08); opacity: 1; }
+
+    .menu a:hover{
+      background: rgba(255,255,255,0.10);
+      opacity: 1;
+    }
 
     @media (max-width: 768px){
       .hamburger{ display:flex; }
+
       .menu{
         position:absolute;
-        top: calc(100% + 10px);
-        right:12px;
+        top: calc(100% + 12px);
+        right:14px;
         flex-direction:column;
-        background: rgba(10,16,24,0.95);
-        border:1px solid var(--border);
-        border-radius:14px;
-        padding:10px;
-        gap:6px;
+        background: rgba(10,16,24,0.96);
+        border:1px solid rgba(255,255,255,0.16);
+        border-radius:16px;
+        padding:12px;
+        gap:8px;
         display:none;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.45);
       }
+
       .menu.open{ display:flex; }
     }
 

@@ -31,61 +31,85 @@
       background: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
     }
 
-    /* Mobile-first: hamburger + menu chiuso di default (evita che compaia prima del click) */
-    .hamburger{
-      display:block;
-      background:none;
-      border:0;
-      cursor:pointer;
-      padding:8px;
-      align-self: center;
-    }
-    .hamburger span{
-      display:block;
-      width:24px;
-      height:2px;
-      background:var(--text);
-      margin:5px 0;
-      border-radius:2px;
-    }
-
-    header.nav{
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      background: rgba(10,16,24,0.9);
-      border-bottom: 1px solid var(--border);
+    /* NAVBAR (standard su tutte le pagine) */
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:60;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:16px 18px;
+      background:var(--nav);
+      border-bottom:1px solid var(--border);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-    /* Menu: CHIUSO di default */
-    .menu{display:none;}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      min-width:0;
+    }
+    .brand .dot{font-size:20px; line-height:1}
+    .brand span:last-child{overflow:hidden;text-overflow:ellipsis}
+
+    .hamburger{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-left:auto;
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(10,16,24,0.35);
+      cursor:pointer;
+      padding:0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hamburger:active{transform:scale(0.98)}
+    .hamburger svg{width:26px;height:26px;opacity:.92}
+
+    /* Menu: CHIUSO di default (evita flash su mobile) */
+    .menu{display:none !important;}
 
     /* Quando è aperto (mobile) */
     body.menu-open .menu{
-      display:flex;
+      display:flex !important;
       position:fixed;
-      top:64px;
+      top:74px;
       right:16px;
       left:16px;
       flex-direction:column;
       background:rgba(10,16,24,0.96);
       border:1px solid var(--border);
-      border-radius:16px;
+      border-radius:18px;
       padding:18px;
-      gap:16px;
-      z-index:50;
+      gap:14px;
+      z-index:80;
+      box-shadow:0 18px 60px rgba(0,0,0,0.45);
     }
+
+    .menu a{
+      color:var(--text);
+      text-decoration:none;
+      opacity:.95;
+      font-weight:700;
+      padding:10px 12px;
+      border-radius:12px;
+    }
+    .menu a:hover{background:rgba(255,255,255,0.08);opacity:1}
 
     /* Desktop/tablet: menu sempre visibile, hamburger nascosto */
     @media (min-width:521px){
       .hamburger{display:none;}
       .menu{
-        display:flex;
+        display:flex !important;
         position:static;
         flex-direction:row;
         background:transparent;
@@ -95,7 +119,9 @@
         gap:18px;
         flex-wrap:wrap;
         justify-content:flex-end;
+        margin-left:auto;
       }
+      .menu a{padding:8px 10px; font-weight:700}
     }
 
     /* Mobile tweaks */
@@ -106,13 +132,20 @@
     /* Base menu link styling (layout gestito sopra con media query) */
     .menu{gap:18px;}
 
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
-    .brand .dot{font-size:18px}
-    .menu a{
-      color:var(--text); text-decoration:none; opacity:.9;
-      font-weight:600; padding:8px 10px; border-radius:10px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      min-width: 0;
     }
-    .menu a:hover{background:rgba(255,255,255,0.08);opacity:1}
+    .brand .dot{font-size:18px}
+    .brand span:last-child{
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
     /* Hero */
     .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
@@ -187,14 +220,13 @@
       <span>Survivor Train</span>
     </div>
 
-    <button class="hamburger" aria-label="Apri menu" aria-expanded="false"
-      onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open'))">
-      <span></span>
-      <span></span>
-      <span></span>
+    <button class="hamburger" aria-label="Apri menu" aria-expanded="false" onclick="toggleMenu(this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M4 6.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0 7h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0-3.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Z"/>
+      </svg>
     </button>
 
-    <nav class="menu">
+    <nav class="menu" aria-label="Menu">
       <a href="index.html" onclick="document.body.classList.remove('menu-open')">Home</a>
       <a href="iscrizione.html" onclick="document.body.classList.remove('menu-open')">Iscrizione</a>
       <a href="regolamento.html" onclick="document.body.classList.remove('menu-open')">Regolamento</a>
@@ -223,6 +255,11 @@
     </section>
   </main>
   <script>
+    function toggleMenu(btn){
+      document.body.classList.toggle('menu-open');
+      btn.setAttribute('aria-expanded', document.body.classList.contains('menu-open'));
+    }
+
     // Evita che iOS/Safari ripristini il menu aperto quando ricarichi o torni indietro
     window.addEventListener('pageshow', () => {
       document.body.classList.remove('menu-open');
