@@ -80,14 +80,21 @@
 
     .hamb{
       display:none;
-      flex-direction:column;
+      width: 46px;
+      height: 46px;
+      align-items:center;
       justify-content:center;
+      flex-direction:column;
       gap:6px;
       cursor:pointer;
       background: transparent;
       border: 0;
-      padding: 10px;
-      margin: -10px;
+      border-radius: 12px;
+      padding: 0;
+    }
+
+    .hamb:hover{
+      background: rgba(255,255,255,0.08);
     }
 
     .hamb span{
@@ -95,6 +102,7 @@
       height:2px;
       background: var(--text);
       border-radius:2px;
+      display:block;
     }
 
     .menu{
@@ -122,7 +130,7 @@
       .menu{
         position:absolute;
         top: calc(100% + 12px);
-        right:14px;
+        right: 0;
         flex-direction:column;
         background: rgba(10,16,24,0.96);
         border:1px solid rgba(255,255,255,0.16);
@@ -253,7 +261,11 @@
     </div>
 
     <div class="nav-actions">
-      <button class="hamb" id="hamb" aria-label="Apri menu" aria-expanded="false">☰</button>
+      <button class="hamb" id="hamb" aria-label="Apri menu" aria-expanded="false" aria-controls="menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
       <nav class="menu" id="menu" aria-label="Menu">
         <a href="index.html">HOME</a>
         <a href="iscrizione.html">ISCRIZIONE</a>
@@ -299,6 +311,7 @@
     (function(){
       const hamb = document.getElementById('hamb');
       const menu = document.getElementById('menu');
+      const nav = document.querySelector('.nav');
 
       function closeMenu(){
         menu.classList.remove('open');
@@ -319,7 +332,9 @@
       // Non chiudere se clicchi dentro al menu
       menu.addEventListener('click', (e) => e.stopPropagation());
 
-      document.addEventListener('click', closeMenu);
+      document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target)) closeMenu();
+      });
       window.addEventListener('scroll', closeMenu, { passive: true });
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeMenu();
