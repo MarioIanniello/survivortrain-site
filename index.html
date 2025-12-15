@@ -49,9 +49,13 @@
     }
 
     header.nav{
-      position:sticky;
-      top:0;
-      z-index:60;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
     }
 
     /* Menu: CHIUSO di default */
@@ -174,14 +178,13 @@
 <body>
   <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
-    <div class="nav-left">
-      <div class="brand">
-        <span class="dot">🚆</span>
-        <span>Survivor Train</span>
-      </div>
+    <div class="brand">
+      <span class="dot">🚆</span>
+      <span>Survivor Train</span>
     </div>
 
-    <button class="hamburger" aria-label="Apri menu" aria-expanded="false" onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open'))">
+    <button class="hamburger" aria-label="Apri menu" aria-expanded="false"
+      onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open'))">
       <span></span>
       <span></span>
       <span></span>
