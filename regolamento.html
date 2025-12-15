@@ -58,40 +58,70 @@
     .nav{
       position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 14px 20px;
+      padding: 12px 16px;
       background: var(--nav);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
     }
-    /* Assicura che contenuto e navbar stiano sopra il background su iOS */
-    .nav, .wrap{ 
-      position: relative;
-      z-index: 1;
-    }
+
     .brand{
-      display:flex; align-items:center; gap:10px;
-      font-weight: 700;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 800;
       letter-spacing: .2px;
       white-space: nowrap;
     }
     .brand .dot{ font-size: 18px; }
-    .menu{
-      display:flex; gap:18px; flex-wrap:wrap; justify-content:flex-end;
+
+    .hamburger{
+      display:none;
+      flex-direction:column;
+      gap:4px;
+      cursor:pointer;
     }
+    .hamburger span{
+      width:22px;
+      height:2px;
+      background: var(--text);
+      border-radius:2px;
+    }
+
+    .menu{
+      display:flex;
+      gap:18px;
+    }
+
     .menu a{
       color: var(--text);
       text-decoration:none;
-      opacity:.9;
       font-weight:600;
       padding:8px 10px;
       border-radius:10px;
+      opacity:.9;
     }
     .menu a:hover{ background: rgba(255,255,255,0.08); opacity: 1; }
+
+    @media (max-width: 768px){
+      .hamburger{ display:flex; }
+      .menu{
+        position:absolute;
+        top:100%;
+        right:12px;
+        flex-direction:column;
+        background: rgba(10,16,24,0.95);
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:10px;
+        gap:6px;
+        display:none;
+      }
+      .menu.open{ display:flex; }
+    }
 
     /* Layout */
     .wrap{
@@ -283,8 +313,14 @@
   <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
     <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
+    <div class="hamburger" onclick="document.querySelector('.menu').classList.toggle('open')">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
     <nav class="menu">
       <a href="index.html">Home</a>
+      <a href="iscrizione.html">Iscrizione</a>
       <a href="regolamento.html">Regolamento</a>
       <a href="classifica.html">Classifica</a>
       <a href="ricarica.html">Ricarica vite</a>
