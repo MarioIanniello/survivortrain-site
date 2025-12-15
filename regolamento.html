@@ -36,7 +36,7 @@
       inset: 0;
       /* Deve stare SEMPRE dietro al contenuto */
       z-index: -1;
-      background-image: url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
+      background-image: url("bg.jpg?v=20251215");
       background-size: cover;
       background-position: center 5%;
       background-repeat: no-repeat;
@@ -83,6 +83,10 @@
       flex-direction:column;
       gap:4px;
       cursor:pointer;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
     }
     .hamburger span{
       width:22px;
@@ -142,29 +146,6 @@
       z-index: 1;
     }
 
-    /* Debug deploy marker (visibile solo per verifica) */
-    .deploy-badge{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.25);
-      color: rgba(238,243,255,0.92);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .2px;
-      margin: 0 0 10px;
-    }
-    .deploy-badge .dot{
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255, 200, 60, 0.95);
-      box-shadow: 0 0 0 3px rgba(255, 200, 60, 0.18);
-      flex: 0 0 auto;
-    }
 
     h1{
       margin: 0 0 10px;
@@ -309,16 +290,15 @@
 </head>
 
 <body>
-  <!-- TEST PUSH -->
   <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
     <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
-    <div class="hamburger" onclick="document.querySelector('.menu').classList.toggle('open')">
+    <button class="hamburger" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
       <span></span>
       <span></span>
       <span></span>
-    </div>
-    <nav class="menu">
+    </button>
+    <nav class="menu" id="mobileMenu">
       <a href="index.html">Home</a>
       <a href="iscrizione.html">Iscrizione</a>
       <a href="regolamento.html">Regolamento</a>
@@ -330,10 +310,6 @@
   <main class="wrap" id="top">
     <section class="section">
       <h1>📜 Regolamento ufficiale</h1>
-      <div class="deploy-badge" aria-label="Verifica deploy">
-        <span class="dot" aria-hidden="true"></span>
-        DEPLOY CHECK — 2025-12-15
-      </div>
       <p>
         Questo regolamento disciplina lo <strong>Skillboll Survivor Train</strong> per la stagione 2025/2026. È il riferimento valido per tutta l’edizione.
       </p>
@@ -620,5 +596,36 @@
 
     </section>
   </main>
+</main>
+  <script>
+    function toggleMenu(){
+      const menu = document.getElementById('mobileMenu');
+      const btn = document.querySelector('.hamburger');
+      const isOpen = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    // Close on link click (mobile)
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('mobileMenu');
+      const btn = document.querySelector('.hamburger');
+      if (!menu || !btn) return;
+
+      const clickedLink = e.target.closest('#mobileMenu a');
+      if (clickedLink && menu.classList.contains('open')){
+        menu.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      const clickedBtn = e.target.closest('.hamburger');
+      if (clickedBtn) return;
+
+      if (menu.classList.contains('open') && !e.target.closest('#mobileMenu')){
+        menu.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
 </body>
 </html>
