@@ -62,7 +62,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
+      /* Navbar più “alta” come su index */
+      min-height: 72px;
+      padding: 18px 16px;
       background: var(--nav);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
@@ -75,21 +77,23 @@
       font-weight: 800;
       letter-spacing: .2px;
       white-space: nowrap;
+      font-size: 20px;
+      line-height: 1;
     }
-    .brand .dot{ font-size: 18px; }
+    .brand .dot{ font-size: 22px; }
 
     .hamburger{
       display:none;
       flex-direction:column;
-      gap:4px;
+      gap:5px;
       cursor:pointer;
       background: transparent;
       border: 0;
-      padding: 0;
-      margin: 0;
+      padding: 10px;
+      margin: -10px; /* mantiene l'allineamento ma aumenta l'area cliccabile */
     }
     .hamburger span{
-      width:22px;
+      width:26px;
       height:2px;
       background: var(--text);
       border-radius:2px;
@@ -114,7 +118,7 @@
       .hamburger{ display:flex; }
       .menu{
         position:absolute;
-        top:100%;
+        top: calc(100% + 10px);
         right:12px;
         flex-direction:column;
         background: rgba(10,16,24,0.95);
