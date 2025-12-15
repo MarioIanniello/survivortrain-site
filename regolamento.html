@@ -220,7 +220,13 @@
       cursor: pointer;
       font-weight: 900;
       opacity: .98;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 2px;
     }
+    summary::-webkit-details-marker{ display:none; }
     summary:hover{ opacity: 1; }
     .note{
       font-size: 13px;
@@ -351,6 +357,7 @@
       </p>
 
       <details>
+        <summary>▶️ A) Edizione d’andata</summary>
         <ul class="bullets">
           <li><span class="icon">▶️</span> Inizia con la <strong>1ª giornata</strong> di Serie A.</li>
           <li><span class="icon">📊</span> Ogni giornata assegna punti in base alle vite giocate e alle vittorie ottenute.</li>
@@ -364,6 +371,7 @@
       </details>
 
       <details>
+        <summary>▶️ B) Edizione di ritorno</summary>
         <ul class="bullets">
           <li><span class="icon">▶️</span> Inizia alla <strong>19ª giornata</strong> di Serie A.</li>
           <li><span class="icon">📊</span> Stesso sistema di punteggio dell’edizione d’andata.</li>
@@ -373,6 +381,7 @@
       </details>
 
       <details>
+        <summary>▶️ Spareggio (solo ritorno): vite potenziali</summary>
         <p>
           In caso di parità di punti totali al termine del girone di ritorno (38ª giornata), vince il concorrente con più
           <strong>vite potenzialmente disponibili</strong>, anche se non acquistate.
@@ -434,6 +443,7 @@
       </p>
 
       <details>
+        <summary>▶️ Dettagli bonus inviti</summary>
         <ol>
           <li>I 5 partecipanti invitati devono indicare nella causale PayPal:
             <span class="kbd">[Nome squadra] – Iscrizione Survivor Train - invitato da [Nome squadra invitante]</span>
@@ -473,6 +483,7 @@
       <!-- 9 -->
       <h2 id="p9">🔁 Partite rinviate o sospese</h2>
       <details>
+        <summary>▶️ Caso 1: recupero entro la giornata successiva</summary>
         <ul class="bullets">
           <li><span class="icon">↩️</span> Se non viene recuperato entro la giornata successiva → giocate annullate e rifacibili.</li>
           <li><span class="icon">✅</span> Se viene recuperato entro tale termine → giocate valide.</li>
@@ -480,6 +491,7 @@
       </details>
 
       <details>
+        <summary>▶️ Caso 2: recupero oltre la giornata successiva</summary>
         <ul class="bullets">
           <li><span class="icon">✅</span> Se recuperato entro la giornata successiva → giocate valide.</li>
           <li><span class="icon">🎁</span> Se non recuperato → giocate considerate vincenti e la squadra non sarà più utilizzabile in seguito.</li>
@@ -520,6 +532,7 @@
       </div>
 
       <details>
+        <summary>▶️ Premio fedeltà (6°–10°)</summary>
         <p>
           I concorrenti dal 6° al 10° posto ricevono l’iscrizione gratuita alla prossima edizione (pacchetto base da 1 vita).
         </p>
@@ -529,6 +542,7 @@
       </details>
 
       <details>
+        <summary>▶️ Premi progressivi (soglie punti)</summary>
         <div class="table-wrap" role="region" aria-label="Premi progressivi" tabindex="0">
           <table>
             <thead>
