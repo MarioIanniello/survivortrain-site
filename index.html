@@ -13,23 +13,69 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
-    body{
-      background-image: url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
+    body{background:#060a10;}
+    .bg-fixed{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      background-image:url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
       background-size:cover;
       background-position:center 5%;
       background-repeat:no-repeat;
-      background-attachment:fixed;
+      transform: translateZ(0);
+    }
+    .bg-fixed::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
     }
 
     /* Navbar */
     .nav{
       position:sticky; top:0; z-index:10;
+      position: relative;
       display:flex; align-items:center; justify-content:space-between;
       gap:16px; padding:14px 20px;
       background:var(--nav);
       border-bottom:1px solid var(--border);
       backdrop-filter:blur(10px);
     }
+    .nav-left{display:flex;align-items:center}
+
+    .hamburger{
+      display:none;
+      background:none;
+      border:0;
+      cursor:pointer;
+      padding:8px;
+    }
+    .hamburger span{
+      display:block;
+      width:24px;
+      height:2px;
+      background:var(--text);
+      margin:5px 0;
+      border-radius:2px;
+    }
+
+    @media (max-width:520px){
+      .menu{
+        position:absolute;
+        top:100%;
+        right:14px;
+        flex-direction:column;
+        background:rgba(10,16,24,0.95);
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:10px;
+        display:none;
+      }
+      body.menu-open .menu{display:flex}
+      .hamburger{display:block}
+      .bg-fixed{ background-position:center 8%; }
+    }
+
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
     .brand .dot{font-size:18px}
     .menu{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
@@ -83,7 +129,7 @@
     .bullets .icon{width:22px;opacity:.95}
 
     @media (max-width:520px){
-      body{background-attachment:scroll;background-position:center 8%}
+      .bg-fixed{ background-position:center 8%; }
       .wrap{padding:0 14px}
       .hero{
         padding:22px 18px 26px;
@@ -105,10 +151,24 @@
   </style>
 </head>
 <body>
+  <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
-    <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
+    <div class="nav-left">
+      <div class="brand">
+        <span class="dot">🚆</span>
+        <span>Survivor Train</span>
+      </div>
+    </div>
+
+    <button class="hamburger" aria-label="Apri menu" aria-expanded="false" onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open'))">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
     <nav class="menu">
       <a href="index.html">Home</a>
+      <a href="iscrizione.html">Iscrizione</a>
       <a href="regolamento.html">Regolamento</a>
       <a href="classifica.html">Classifica</a>
       <a href="ricarica.html">Ricarica vite</a>
