@@ -62,16 +62,19 @@
       align-items:center;
       gap:10px;
       font-weight: 900;
+      font-size: 18px;
       letter-spacing: .2px;
       white-space: nowrap;
       user-select: none;
     }
 
     .brand img{
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
     }
+
+    .nav-actions{ position: relative; }
 
     .hamb{
       border: 1px solid var(--border);
@@ -79,6 +82,7 @@
       color: var(--text);
       border-radius: 12px;
       padding: 10px 12px;
+      font-size: 18px;
       font-weight: 900;
       cursor: pointer;
       line-height: 1;
@@ -88,7 +92,7 @@
 
     .menu{
       position: absolute;
-      right: 16px;
+      right: 0;
       top: calc(100% + 10px);
       min-width: 220px;
       background: rgba(10, 16, 24, 0.92);
@@ -226,11 +230,11 @@
   <header class="nav" id="top">
     <div class="brand">
       <!-- Sostituisci 'logo.png' con il nome esatto del tuo logo (mettilo nella root del repo) -->
-      <img src="logo.png" alt="Survivor Train" onerror="this.style.display='none'" />
+      <img src="logo.png" alt="Survivor Train" />
       <span>Survivor Train</span>
     </div>
 
-    <div style="position: relative;">
+    <div class="nav-actions">
       <button class="hamb" id="hamb" aria-label="Apri menu" aria-expanded="false">☰</button>
       <nav class="menu" id="menu" aria-label="Menu">
         <a href="index.html">HOME</a>
