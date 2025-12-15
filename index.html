@@ -48,21 +48,29 @@
       border-radius:2px;
     }
 
+    header.nav{
+      position:sticky;
+      top:0;
+      z-index:60;
+    }
+
     /* Menu: CHIUSO di default */
     .menu{display:none;}
 
     /* Quando è aperto (mobile) */
     body.menu-open .menu{
       display:flex;
-      position:absolute;
-      top:100%;
-      right:14px;
+      position:fixed;
+      top:64px;
+      right:16px;
+      left:16px;
       flex-direction:column;
-      background:rgba(10,16,24,0.95);
+      background:rgba(10,16,24,0.96);
       border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px;
-      gap:12px;
+      border-radius:16px;
+      padding:18px;
+      gap:16px;
+      z-index:50;
     }
 
     /* Desktop/tablet: menu sempre visibile, hamburger nascosto */
@@ -180,11 +188,11 @@
     </button>
 
     <nav class="menu">
-      <a href="index.html">Home</a>
-      <a href="iscrizione.html">Iscrizione</a>
-      <a href="regolamento.html">Regolamento</a>
-      <a href="classifica.html">Classifica</a>
-      <a href="ricarica.html">Ricarica vite</a>
+      <a href="index.html" onclick="document.body.classList.remove('menu-open')">Home</a>
+      <a href="iscrizione.html" onclick="document.body.classList.remove('menu-open')">Iscrizione</a>
+      <a href="regolamento.html" onclick="document.body.classList.remove('menu-open')">Regolamento</a>
+      <a href="classifica.html" onclick="document.body.classList.remove('menu-open')">Classifica</a>
+      <a href="ricarica.html" onclick="document.body.classList.remove('menu-open')">Ricarica vite</a>
     </nav>
   </header>
 
