@@ -55,6 +55,8 @@
       background: var(--nav);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      flex-wrap: nowrap;
     }
 
     .brand{
@@ -64,8 +66,13 @@
       font-weight: 900;
       font-size: 18px;
       letter-spacing: .2px;
-      white-space: nowrap;
       user-select: none;
+      min-width: 0;
+    }
+    .brand span:last-child{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .brand img{
@@ -80,7 +87,10 @@
       align-items: center;
     }
 
-    .nav-actions{ position: relative; }
+    .nav-actions{
+      position: relative;
+      flex: 0 0 auto;
+    }
 
     .hamb{
       border: 1px solid var(--border);
@@ -107,9 +117,10 @@
       padding: 10px;
       display: none;
       box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+      /* Always hidden unless .open is present */
+      display: none !important;
     }
-
-    .menu.open{ display: block; }
+    .menu.open{ display: block !important; }
 
     .menu a{
       display: block;
@@ -292,14 +303,25 @@
         hamb.setAttribute('aria-expanded', 'false');
       }
 
+      function openMenu(){
+        menu.classList.add('open');
+        hamb.setAttribute('aria-expanded', 'true');
+      }
+
       hamb.addEventListener('click', (e) => {
         e.stopPropagation();
-        const isOpen = menu.classList.toggle('open');
-        hamb.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const isOpen = menu.classList.contains('open');
+        if (isOpen) closeMenu(); else openMenu();
       });
+
+      // Non chiudere se clicchi dentro al menu
+      menu.addEventListener('click', (e) => e.stopPropagation());
 
       document.addEventListener('click', closeMenu);
       window.addEventListener('scroll', closeMenu, { passive: true });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
     })();
   </script>
 
