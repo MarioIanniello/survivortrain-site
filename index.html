@@ -31,20 +31,9 @@
       background: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
     }
 
-    /* Navbar */
-    .nav{
-      position:sticky; top:0; z-index:10;
-      position: relative;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:16px; padding:14px 20px;
-      background:var(--nav);
-      border-bottom:1px solid var(--border);
-      backdrop-filter:blur(10px);
-    }
-    .nav-left{display:flex;align-items:center}
-
+    /* Mobile-first: hamburger + menu chiuso di default (evita che compaia prima del click) */
     .hamburger{
-      display:none;
+      display:block;
       background:none;
       border:0;
       cursor:pointer;
@@ -59,26 +48,50 @@
       border-radius:2px;
     }
 
-    @media (max-width:520px){
+    /* Menu: CHIUSO di default */
+    .menu{display:none;}
+
+    /* Quando è aperto (mobile) */
+    body.menu-open .menu{
+      display:flex;
+      position:absolute;
+      top:100%;
+      right:14px;
+      flex-direction:column;
+      background:rgba(10,16,24,0.95);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      gap:12px;
+    }
+
+    /* Desktop/tablet: menu sempre visibile, hamburger nascosto */
+    @media (min-width:521px){
+      .hamburger{display:none;}
       .menu{
-        position:absolute;
-        top:100%;
-        right:14px;
-        flex-direction:column;
-        background:rgba(10,16,24,0.95);
-        border:1px solid var(--border);
-        border-radius:14px;
-        padding:10px;
-        display:none;
+        display:flex;
+        position:static;
+        flex-direction:row;
+        background:transparent;
+        border:0;
+        border-radius:0;
+        padding:0;
+        gap:18px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
       }
-      body.menu-open .menu{display:flex}
-      .hamburger{display:block}
+    }
+
+    /* Mobile tweaks */
+    @media (max-width:520px){
       .bg-fixed{ background-position:center 8%; }
     }
 
+    /* Base menu link styling (layout gestito sopra con media query) */
+    .menu{gap:18px;}
+
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
     .brand .dot{font-size:18px}
-    .menu{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
     .menu a{
       color:var(--text); text-decoration:none; opacity:.9;
       font-weight:600; padding:8px 10px; border-radius:10px;
@@ -194,5 +207,13 @@
       </ul>
     </section>
   </main>
+  <script>
+    // Evita che iOS/Safari ripristini il menu aperto quando ricarichi o torni indietro
+    window.addEventListener('pageshow', () => {
+      document.body.classList.remove('menu-open');
+      const btn = document.querySelector('.hamburger');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  </script>
 </body>
 </html>
