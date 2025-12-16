@@ -13,11 +13,19 @@
 
   function setupNavbar() {
     const hamburger = document.querySelector(".hamburger");
-    const mobileMenu = document.querySelector(".mobile-menu");
+    // Supporta sia il markup nuovo (id="mobileMenu" con class="menu")
+    // sia eventuali varianti precedenti (class="mobile-menu").
+    const mobileMenu =
+      document.getElementById("mobileMenu") ||
+      document.querySelector(".mobile-menu") ||
+      document.querySelector("nav.menu");
     const nav = document.querySelector(".nav");
 
     // Se la pagina non ha la navbar standard, esci senza errori
     if (!hamburger || !mobileMenu || !nav) return;
+
+    // Stato iniziale accessibilità
+    mobileMenu.setAttribute("aria-hidden", "true");
 
     // Assicurati che il dropdown sia posizionato rispetto alla navbar
     // (serve se la pagina non ha position:relative sul header)
@@ -27,11 +35,13 @@
 
     function openMenu() {
       mobileMenu.classList.add("is-open");
+      mobileMenu.setAttribute("aria-hidden", "false");
       hamburger.setAttribute("aria-expanded", "true");
     }
 
     function closeMenu() {
       mobileMenu.classList.remove("is-open");
+      mobileMenu.setAttribute("aria-hidden", "true");
       hamburger.setAttribute("aria-expanded", "false");
     }
 
