@@ -1,3 +1,164 @@
+/* NAVBAR (standard su tutte le pagine) */
+.nav{
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(10,16,24,0.78);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  user-select: none;
+}
+.brand .dot{ font-size: 18px; }
+
+/* Desktop: menu visibile, hamburger nascosto */
+.menu{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.menu a{
+  color: #eef3ff;
+  text-decoration: none;
+  opacity: .92;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.menu a:hover{ background: rgba(255,255,255,0.08); opacity: 1; }
+
+.hamburger{
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #eef3ff;
+  cursor: pointer;
+}
+.hamburger:hover{ background: rgba(255,255,255,0.10); }
+.hamburger svg{ width: 22px; height: 22px; display: block; }
+
+/* Mobile: hamburger visibile, menu a tendina */
+@media (max-width: 820px){
+  .hamburger{ display: inline-flex; }
+
+  .menu{
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 16px;
+    left: auto;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(10,16,24,0.92);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    min-width: 220px;
+  }
+
+  .menu.is-open{ display: flex; }
+
+  .menu a{
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* Serve perché .menu è absolute */
+  .nav{ position: sticky; }
+}
+(function () {
+  function setupNavbar() {
+    const toggle = document.getElementById('navToggle');
+    const menu = document.getElementById('mobileMenu');
+    if (!toggle || !menu) return;
+
+    function openMenu() {
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleMenu() {
+      const isOpen = menu.classList.contains('is-open');
+      if (isOpen) closeMenu();
+      else openMenu();
+    }
+
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Chiudi cliccando fuori
+    document.addEventListener('click', function (e) {
+      if (!menu.classList.contains('is-open')) return;
+      const target = e.target;
+      if (menu.contains(target) || toggle.contains(target)) return;
+      closeMenu();
+    });
+
+    // Chiudi dopo click su un link (mobile)
+    menu.addEventListener('click', function (e) {
+      const a = e.target && e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      closeMenu();
+    });
+
+    // Chiudi con ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    // Se si passa a desktop, mostra menu e resetta stato
+    const mq = window.matchMedia('(max-width: 820px)');
+    function handleMQ() {
+      if (!mq.matches) {
+        // Desktop
+        menu.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        // Su desktop il menu deve essere visibile via CSS
+      }
+    }
+    if (mq.addEventListener) mq.addEventListener('change', handleMQ);
+    else mq.addListener(handleMQ);
+    handleMQ();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNavbar);
+  } else {
+    setupNavbar();
+  }
+})();
 <!doctype html>
 <html lang="it">
 <head>
