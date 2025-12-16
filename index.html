@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Skillboll Survivor Train</title>
+  <link rel="stylesheet" href="shared.css">
   <style>
     :root{
       --text:#eef3ff;
@@ -29,99 +30,6 @@
       position:absolute;
       inset:0;
       background: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
-    }
-
-    /* NAVBAR (standard su tutte le pagine) */
-    .nav{
-      position:sticky;
-      top:0;
-      z-index:100;
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding:18px 20px;
-      background:var(--nav);
-      border-bottom:1px solid var(--border);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      letter-spacing:.2px;
-      white-space:nowrap;
-    }
-
-    .brand .dot{
-      font-size:22px;
-      line-height:1;
-    }
-
-    .hamburger{
-      margin-left:auto;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background:rgba(10,16,24,0.35);
-      cursor:pointer;
-      padding:0;
-    }
-
-    .hamburger svg{
-      width:26px;
-      height:26px;
-    }
-
-    .menu{
-      display:none;
-    }
-
-    body.menu-open .menu{
-      display:flex;
-      position:fixed;
-      top:78px;
-      left:16px;
-      right:16px;
-      flex-direction:column;
-      background:rgba(10,16,24,0.96);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:18px;
-      gap:14px;
-      z-index:120;
-    }
-
-    .menu a{
-      color:var(--text);
-      text-decoration:none;
-      font-weight:700;
-      padding:10px 12px;
-      border-radius:12px;
-    }
-
-    .menu a:hover{
-      background:rgba(255,255,255,0.08);
-    }
-
-    @media (min-width: 521px){
-      .hamburger{display:none;}
-      .menu{
-        display:flex;
-        position:static;
-        flex-direction:row;
-        background:transparent;
-        border:0;
-        padding:0;
-        gap:18px;
-        margin-left:auto;
-      }
     }
 
     /* Hero */
@@ -197,18 +105,18 @@
       <span>Survivor Train</span>
     </div>
 
-    <button class="hamburger" aria-label="Apri menu" aria-expanded="false" onclick="toggleMenu(this)">
+    <button class="hamburger" id="navToggle" aria-label="Apri menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path fill="currentColor" d="M4 6.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0 7h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0-3.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Z"/>
       </svg>
     </button>
 
-    <nav class="menu" aria-label="Menu">
-      <a href="index.html" onclick="document.body.classList.remove('menu-open')">Home</a>
-      <a href="iscrizione.html" onclick="document.body.classList.remove('menu-open')">Iscrizione</a>
-      <a href="regolamento.html" onclick="document.body.classList.remove('menu-open')">Regolamento</a>
-      <a href="classifica.html" onclick="document.body.classList.remove('menu-open')">Classifica</a>
-      <a href="ricarica.html" onclick="document.body.classList.remove('menu-open')">Ricarica vite</a>
+    <nav class="menu" id="mobileMenu" aria-label="Menu">
+      <a href="index.html">Home</a>
+      <a href="iscrizione.html">Iscrizione</a>
+      <a href="regolamento.html">Regolamento</a>
+      <a href="classifica.html">Classifica</a>
+      <a href="ricarica.html">Ricarica vite</a>
     </nav>
   </header>
 
@@ -231,18 +139,6 @@
       </ul>
     </section>
   </main>
-  <script>
-    function toggleMenu(btn){
-      document.body.classList.toggle('menu-open');
-      btn.setAttribute('aria-expanded', document.body.classList.contains('menu-open'));
-    }
-
-    // Evita che iOS/Safari ripristini il menu aperto quando ricarichi o torni indietro
-    window.addEventListener('pageshow', () => {
-      document.body.classList.remove('menu-open');
-      const btn = document.querySelector('.hamburger');
-      if (btn) btn.setAttribute('aria-expanded', 'false');
-    });
-  </script>
+  <script src="navbar.js" defer></script>
 </body>
 </html>

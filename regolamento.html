@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="shared.css">
+  <script src="navbar.js" defer></script>
   <title>Regolamento — Skillboll Survivor Train</title>
 
   <style>
@@ -52,94 +54,6 @@
       position: absolute;
       inset: 0;
       background: rgba(0,0,0,0.18);
-    }
-
-    /* NAVBAR (standard su tutte le pagine) */
-    .nav{
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 78px;
-      padding: 18px 18px;
-      background: rgba(8, 14, 22, 0.85);
-      border-bottom: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(14px);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight: 800;
-      letter-spacing: .3px;
-      white-space: nowrap;
-      font-size: 21px;
-      line-height: 1;
-    }
-
-    .brand .dot{
-      font-size: 24px;
-    }
-
-    .hamburger{
-      display:none;
-      flex-direction:column;
-      justify-content:center;
-      gap:6px;
-      cursor:pointer;
-      background: transparent;
-      border: 0;
-      padding: 10px;
-      margin: -10px;
-    }
-
-    .hamburger span{
-      width:28px;
-      height:2px;
-      background: var(--text);
-      border-radius:2px;
-    }
-
-    .menu{
-      display:flex;
-      gap:20px;
-    }
-
-    .menu a{
-      color: var(--text);
-      text-decoration:none;
-      font-weight:600;
-      padding:9px 12px;
-      border-radius:12px;
-      opacity:.92;
-    }
-
-    .menu a:hover{
-      background: rgba(255,255,255,0.10);
-      opacity: 1;
-    }
-
-    @media (max-width: 768px){
-      .hamburger{ display:flex; }
-
-      .menu{
-        position:absolute;
-        top: calc(100% + 12px);
-        right:14px;
-        flex-direction:column;
-        background: rgba(10,16,24,0.96);
-        border:1px solid rgba(255,255,255,0.16);
-        border-radius:16px;
-        padding:12px;
-        gap:8px;
-        display:none;
-        box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-      }
-
-      .menu.open{ display:flex; }
     }
 
     /* Layout */
@@ -314,11 +228,13 @@
   <div class="bg-fixed" aria-hidden="true"></div>
   <header class="nav">
     <div class="brand"><span class="dot">🚆</span> Survivor Train</div>
-    <button class="hamburger" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMenu()">
+
+    <button class="hamburger" id="navToggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
       <span></span>
       <span></span>
     </button>
+
     <nav class="menu" id="mobileMenu">
       <a href="index.html">Home</a>
       <a href="iscrizione.html">Iscrizione</a>
@@ -618,35 +534,5 @@
     </section>
   </main>
 
-  <script>
-    function toggleMenu(){
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.hamburger');
-      const isOpen = menu.classList.toggle('open');
-      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    }
-
-    // Close on link click (mobile)
-    document.addEventListener('click', (e) => {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.hamburger');
-      if (!menu || !btn) return;
-
-      const clickedLink = e.target.closest('#mobileMenu a');
-      if (clickedLink && menu.classList.contains('open')){
-        menu.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-        return;
-      }
-
-      const clickedBtn = e.target.closest('.hamburger');
-      if (clickedBtn) return;
-
-      if (menu.classList.contains('open') && !e.target.closest('#mobileMenu')){
-        menu.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  </script>
 </body>
 </html>

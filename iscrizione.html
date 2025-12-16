@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Iscrizione — Survivor Train</title>
+  <link rel="stylesheet" href="shared.css">
+  <script src="navbar.js" defer></script>
 
   <style>
     :root {
@@ -40,108 +42,6 @@
         background-repeat: no-repeat;
         transform: translateZ(0);
       }
-    }
-
-    /* NAVBAR (standard su tutte le pagine) */
-    .nav{
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 78px;
-      padding: 18px 18px;
-      background: rgba(8, 14, 22, 0.85);
-      border-bottom: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight: 800;
-      letter-spacing: .3px;
-      white-space: nowrap;
-      font-size: 21px;
-      line-height: 1;
-    }
-
-    .brand .emoji-logo{
-      font-size: 24px;
-      line-height: 1;
-    }
-
-    .nav-actions{
-      position: relative;
-    }
-
-    .hamb{
-      display:none;
-      width: 46px;
-      height: 46px;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:6px;
-      cursor:pointer;
-      background: transparent;
-      border: 0;
-      border-radius: 12px;
-      padding: 0;
-    }
-
-    .hamb:hover{
-      background: rgba(255,255,255,0.08);
-    }
-
-    .hamb span{
-      width:28px;
-      height:2px;
-      background: var(--text);
-      border-radius:2px;
-      display:block;
-    }
-
-    .menu{
-      display:flex;
-      gap:20px;
-    }
-
-    .menu a{
-      color: var(--text);
-      text-decoration:none;
-      font-weight:600;
-      padding:9px 12px;
-      border-radius:12px;
-      opacity:.92;
-    }
-
-    .menu a:hover{
-      background: rgba(255,255,255,0.10);
-      opacity: 1;
-    }
-
-    @media (max-width: 768px){
-      .hamb{ display:flex; }
-
-      .menu{
-        position:absolute;
-        top: calc(100% + 12px);
-        right: 0;
-        flex-direction:column;
-        background: rgba(10,16,24,0.96);
-        border:1px solid rgba(255,255,255,0.16);
-        border-radius:16px;
-        padding:12px;
-        gap:8px;
-        display:none;
-        box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-      }
-
-      .menu.open{ display:flex; }
     }
 
     /* Layout */
@@ -245,7 +145,6 @@
     }
 
     @media (max-width: 520px){
-      body{ background-attachment: scroll; background-position: center 8%; }
       .wrap{ padding: 16px 14px 44px; }
       .card{ padding: 18px 16px; }
       .btn{ width: 100%; }
@@ -255,25 +154,24 @@
 
 <body>
   <header class="nav" id="top">
-    <div class="brand">
+    <a class="brand" href="index.html" aria-label="Vai alla Home">
       <span class="emoji-logo" aria-hidden="true">🚆</span>
       <span>Survivor Train</span>
-    </div>
+    </a>
 
-    <div class="nav-actions">
-      <button class="hamb" id="hamb" aria-label="Apri menu" aria-expanded="false" aria-controls="menu">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </button>
-      <nav class="menu" id="menu" aria-label="Menu">
-        <a href="index.html">HOME</a>
-        <a href="iscrizione.html">ISCRIZIONE</a>
-        <a href="regolamento.html">REGOLAMENTO</a>
-        <a href="classifica.html">CLASSIFICA</a>
-        <a href="ricarica.html">RICARICA VITE</a>
-      </nav>
-    </div>
+    <button class="hamburger" id="navToggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+
+    <nav class="menu" id="mobileMenu" aria-label="Menu">
+      <a href="index.html">HOME</a>
+      <a href="iscrizione.html" aria-current="page">ISCRIZIONE</a>
+      <a href="regolamento.html">REGOLAMENTO</a>
+      <a href="classifica.html">CLASSIFICA</a>
+      <a href="ricarica.html">RICARICA VITE</a>
+    </nav>
   </header>
 
   <main class="wrap">
@@ -305,42 +203,6 @@
       </div>
     </section>
   </main>
-
-  <script>
-    // Menu hamburger
-    (function(){
-      const hamb = document.getElementById('hamb');
-      const menu = document.getElementById('menu');
-      const nav = document.querySelector('.nav');
-
-      function closeMenu(){
-        menu.classList.remove('open');
-        hamb.setAttribute('aria-expanded', 'false');
-      }
-
-      function openMenu(){
-        menu.classList.add('open');
-        hamb.setAttribute('aria-expanded', 'true');
-      }
-
-      hamb.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = menu.classList.contains('open');
-        if (isOpen) closeMenu(); else openMenu();
-      });
-
-      // Non chiudere se clicchi dentro al menu
-      menu.addEventListener('click', (e) => e.stopPropagation());
-
-      document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target)) closeMenu();
-      });
-      window.addEventListener('scroll', closeMenu, { passive: true });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMenu();
-      });
-    })();
-  </script>
 
   <script type="module">
     // ===============================
