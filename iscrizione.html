@@ -149,15 +149,19 @@
       .card{ padding: 18px 16px; }
       .btn{ width: 100%; }
     }
+
+    /* Navbar: evita stile link di default e allinea resa con le altre pagine */
+    .nav .brand { color: var(--text); text-decoration: none; }
+    .nav .brand { cursor: default; }
   </style>
 </head>
 
 <body>
   <header class="nav" id="top">
-    <a class="brand" href="index.html" aria-label="Vai alla Home">
+    <div class="brand" aria-label="Survivor Train">
       <span class="emoji-logo" aria-hidden="true">🚆</span>
       <span>Survivor Train</span>
-    </a>
+    </div>
 
     <button class="hamburger" id="navToggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu">
       <span aria-hidden="true"></span>
@@ -166,11 +170,11 @@
     </button>
 
     <nav class="menu" id="mobileMenu" aria-label="Menu">
-      <a href="index.html">HOME</a>
-      <a href="iscrizione.html" aria-current="page">ISCRIZIONE</a>
-      <a href="regolamento.html">REGOLAMENTO</a>
-      <a href="classifica.html">CLASSIFICA</a>
-      <a href="ricarica.html">RICARICA VITE</a>
+      <a href="index.html">Home</a>
+      <a href="iscrizione.html" aria-current="page">Iscrizione</a>
+      <a href="regolamento.html">Regolamento</a>
+      <a href="classifica.html">Classifica</a>
+      <a href="ricarica.html">Ricarica vite</a>
     </nav>
   </header>
 
