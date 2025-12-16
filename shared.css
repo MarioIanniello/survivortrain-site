@@ -81,7 +81,7 @@ body{
   color: var(--text);
   padding: 8px;
   border-radius: 10px;
-  display: inline-flex; /* default: visible */
+  display: none; /* default: hidden (desktop). Will be shown on mobile via media queries */
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
@@ -160,8 +160,17 @@ body{
 @media (max-width: 720px){
   .nav{ padding: 14px 14px; }
   .brand{ font-size: 16px; }
+  .hamburger{ display: inline-flex; }
 
   /* il nav diventa dropdown e resta chiuso finché non ha .is-open */
+  #mobileMenu{ display: none; }
+  #mobileMenu.is-open{ display: block; }
+}
+
+/* Mobile detection fallback (iOS/phone): show hamburger even if layout width is large */
+@media (hover: none) and (pointer: coarse){
+  .hamburger{ display: inline-flex !important; }
+  /* dropdown stays closed until JS adds .is-open */
   #mobileMenu{ display: none; }
   #mobileMenu.is-open{ display: block; }
 }
