@@ -445,7 +445,8 @@
               uid: user.uid,
               teamName: teamName.value.trim(),
               lives: selectedLives,
-              amountEUR: selectedPrice
+              amountEUR: selectedPrice,
+              siteBase: window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/')
             })
           });
 
@@ -459,7 +460,11 @@
           const res = await fetch(PAYPAL_CAPTURE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ uid: user.uid, orderID: data.orderID })
+            body: JSON.stringify({
+              uid: user.uid,
+              orderID: data.orderID,
+              siteBase: window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/')
+            })
           });
 
           if (!res.ok) throw new Error('Pagamento non confermato.');
