@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Area personale – Survivor Train</title>
+
+  <!-- Shared navbar + base styles -->
+  <link rel="stylesheet" href="shared.css">
+  <script src="navbar.js" defer></script>
+
+  <!-- Page-specific styles -->
+  <style>
+    :root{
+      --text:#eef3ff;
+      --muted:rgba(238,243,255,0.85);
+      --border:rgba(255,255,255,0.12);
+      --glass:rgba(0,0,0,0.28);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; color:var(--text); }
+
+    /* Fixed background (mobile-safe) */
+    body{ background:#060a10; }
+    .bg-fixed{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      background-image:url("https://marioianniello.github.io/survivortrain-site/bg.jpg");
+      background-size:cover;
+      background-position:center 8%;
+      background-repeat:no-repeat;
+      transform: translateZ(0);
+    }
+
+    /* Layout */
+    .wrap{ max-width:1200px; margin:0 auto; padding: 0 24px 48px; }
+
+    .panel{
+      margin-top: 0;
+      padding: 24px 22px;
+      border-radius: 18px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+    }
+
+    h1{ margin: 0 0 10px; font-size: clamp(26px, 3vw, 40px); letter-spacing:-0.5px; }
+    p{ margin: 0 0 14px; color: var(--muted); line-height: 1.6; max-width: 90ch; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .card{
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .label{ display:block; font-weight: 800; margin-bottom: 8px; }
+    .help{ font-size: 13px; opacity: .85; margin-top: 8px; }
+
+    input[type="text"], select{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline: none;
+    }
+    input::placeholder{ color: rgba(238,243,255,0.55); }
+
+    .packages{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .pkg{
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(0,0,0,0.18);
+      cursor: pointer;
+      user-select:none;
+    }
+    .pkg input{ display:none; }
+    .pkg strong{ display:block; font-size: 16px; }
+    .pkg span{ display:block; margin-top: 6px; color: var(--muted); }
+    .pkg.active{ outline: 2px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.06); }
+
+    .row{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.22);
+      font-weight: 800;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      opacity: .95;
+      cursor: pointer;
+    }
+    .btn:hover{ opacity: 1; background: rgba(255,255,255,0.12); }
+
+    .hidden{ display:none !important; }
+
+    /* Mobile */
+    @media (max-width:520px){
+      .wrap{ padding: 0 14px 40px; }
+      .packages{ grid-template-columns: 1fr; }
+      .row{ justify-content: flex-start; }
+    }
+  </style>
+
+  <!-- Firebase (Compat CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- PayPal JS SDK (IMPORTANT: replace YOUR_PAYPAL_CLIENT_ID) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AR6EoR2SKgGz2MRRzEJYssWG-VHhXkkY4tAKISSsZT3YWVCdvWNVfj6YxGVa2dl_4o8K3F9pqUUa5Y2n&currency=EUR"></script>
+</head>
+
+<body>
+  <div class="bg-fixed" aria-hidden="true"></div>
+
+  <!-- NAVBAR (standard) -->
+  <header class="nav">
+    <div class="brand">
+      <span class="dot">🚆</span>
+      <span>Survivor Train</span>
+    </div>
+
+    <button class="hamburger" id="navToggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M4 6.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0 7h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Zm0-3.5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2Z"/>
+      </svg>
+    </button>
+
+    <nav class="menu" id="mobileMenu" aria-label="Menu">
+      <a href="index.html">Home</a>
+      <a href="iscrizione.html">Iscrizione</a>
+      <a href="regolamento.html">Regolamento</a>
+      <a href="classifica.html">Classifica</a>
+      <a href="ricarica.html">Ricarica vite</a>
+      <a href="#" id="logoutLink">Logout</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <h1>👤 Area personale</h1>
+      <p id="who">Caricamento utente…</p>
+
+      <!-- ONBOARDING: visibile solo se non ancora “attivo” -->
+      <div id="onboarding" class="grid">
+        <div class="card">
+          <span class="label">Nome squadra</span>
+          <input id="teamName" type="text" placeholder="Es. Boys Napoli" maxlength="28" autocomplete="off" />
+          <div class="help">Usa un nome breve e riconoscibile: apparirà in classifica e nelle comunicazioni ufficiali.</div>
+        </div>
+
+        <div class="card">
+          <span class="label">Scegli il pacchetto vite iniziali</span>
+          <div class="packages" id="packages">
+            <label class="pkg" data-lives="1" data-price="10">
+              <input type="radio" name="package" value="1" />
+              <strong>1 Vita</strong>
+              <span>10€</span>
+            </label>
+            <label class="pkg" data-lives="3" data-price="20">
+              <input type="radio" name="package" value="3" />
+              <strong>3 Vite</strong>
+              <span>20€</span>
+            </label>
+            <label class="pkg" data-lives="5" data-price="30">
+              <input type="radio" name="package" value="5" />
+              <strong>5 Vite</strong>
+              <span>30€</span>
+            </label>
+          </div>
+          <div class="help">
+            Nota: la registrazione è valida <strong>solo dopo pagamento riuscito</strong>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <span class="badge">Totale: <span id="total">—</span></span>
+            <button class="btn" id="saveDraft" type="button">Salva dati (bozza)</button>
+          </div>
+          <p class="help">
+            “Salva bozza” salva solo i dati in attesa pagamento. La tua iscrizione diventa attiva solo quando il pagamento va a buon fine.
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="label">Pagamento</span>
+          <p>
+            Pagherai tramite <strong>PayPal</strong> (dove disponibile anche <strong>carta di credito</strong> e <strong>Apple Pay</strong> all’interno del checkout PayPal).
+          </p>
+
+          <!-- PayPal buttons mount point -->
+          <div id="paypalButtons"></div>
+
+          <p class="help">
+            Importante (tecnico): per rendere “valida” l’iscrizione solo dopo pagamento, serve una verifica lato server (Firebase Functions / webhook). Qui sotto è già predisposto il flusso con chiamate a due endpoint.
+          </p>
+        </div>
+      </div>
+
+      <!-- DASHBOARD: visibile solo se “attivo” -->
+      <div id="dashboard" class="grid hidden">
+        <div class="card">
+          <span class="label">Squadra</span>
+          <div id="dashTeam" style="font-weight:900; font-size:18px;">—</div>
+          <div class="help">Stato iscrizione: <span id="dashStatus">—</span></div>
+        </div>
+
+        <div class="card">
+          <span class="label">Riepilogo</span>
+          <ul class="help" style="margin:0; padding-left:18px; color: var(--muted);">
+            <li>Vite attive: <strong id="dashLives">—</strong></li>
+            <li>Punti: <strong id="dashPoints">—</strong></li>
+            <li>Posizione: <strong id="dashRank">—</strong></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="label">Storico ricariche</span>
+          <div class="help">(Arriva dopo: qui leggeremo la collection Firestore “topups”) </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /**********************
+     * 1) FIREBASE INIT
+     **********************/
+    // TODO: incolla qui la tua configurazione Firebase (Project settings → Web app)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAs02ZYpiZDySuniLMnbvZfk-7jVZ6OPFI",
+      authDomain: "survivor-train.firebaseapp.com",
+      projectId: "survivor-train",
+      appId: "1:695404968672:web:779f8ae31d78218fee2e85"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    /**********************
+     * 2) UI HELPERS
+     **********************/
+    const el = (id) => document.getElementById(id);
+
+    const onboarding = el('onboarding');
+    const dashboard = el('dashboard');
+    const who = el('who');
+
+    const teamName = el('teamName');
+    const total = el('total');
+
+    const packagesEl = el('packages');
+    let selectedLives = null;
+    let selectedPrice = null;
+
+    function setPkgActive(target){
+      [...packagesEl.querySelectorAll('.pkg')].forEach(p => p.classList.remove('active'));
+      target.classList.add('active');
+      selectedLives = Number(target.dataset.lives);
+      selectedPrice = Number(target.dataset.price);
+      total.textContent = `${selectedPrice}€ (Pacchetto: ${selectedLives} vite)`;
+    }
+
+    packagesEl.addEventListener('click', (e) => {
+      const pkg = e.target.closest('.pkg');
+      if (!pkg) return;
+      pkg.querySelector('input').checked = true;
+      setPkgActive(pkg);
+    });
+
+    function validateForm(){
+      const name = (teamName.value || '').trim();
+      if (!name) return { ok:false, msg:'Inserisci il nome squadra.' };
+      if (name.length < 3) return { ok:false, msg:'Nome squadra troppo corto.' };
+      if (!selectedLives || !selectedPrice) return { ok:false, msg:'Seleziona un pacchetto vite.' };
+      return { ok:true };
+    }
+
+    async function saveDraftProfile(user){
+      const v = validateForm();
+      if (!v.ok) throw new Error(v.msg);
+
+      const name = teamName.value.trim();
+      const docRef = db.collection('users').doc(user.uid);
+
+      // “pending”: bozza in attesa pagamento
+      await docRef.set({
+        email: user.email || null,
+        teamName: name,
+        packageLives: selectedLives,
+        packagePriceEUR: selectedPrice,
+        status: 'pending',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    }
+
+    el('saveDraft').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      try{
+        await saveDraftProfile(user);
+        alert('Bozza salvata. Ora completa il pagamento per attivare l’iscrizione.');
+      }catch(err){
+        alert(err.message || 'Errore nel salvataggio bozza.');
+      }
+    });
+
+    // Logout
+    el('logoutLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    /**********************
+     * 3) AUTH GUARD + LOAD PROFILE
+     **********************/
+    auth.onAuthStateChanged(async (user) => {
+      if (!user){
+        // Non loggato → torna a iscrizione
+        window.location.href = 'iscrizione.html';
+        return;
+      }
+
+      who.textContent = `Sei loggato come: ${user.email || 'utente'}`;
+
+      const docRef = db.collection('users').doc(user.uid);
+      const snap = await docRef.get();
+
+      if (snap.exists && snap.data() && snap.data().status === 'active'){
+        // Dashboard
+        onboarding.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+
+        const d = snap.data();
+        el('dashTeam').textContent = d.teamName || '—';
+        el('dashStatus').textContent = 'Attiva ✅';
+        el('dashLives').textContent = (d.livesAvailable ?? d.packageLives ?? '—');
+        el('dashPoints').textContent = (d.points ?? '—');
+        el('dashRank').textContent = (d.rank ?? '—');
+
+        return;
+      }
+
+      // Onboarding (se esiste bozza la precompiliamo)
+      onboarding.classList.remove('hidden');
+      dashboard.classList.add('hidden');
+
+      if (snap.exists){
+        const d = snap.data();
+        if (d.teamName) teamName.value = d.teamName;
+        if (d.packageLives){
+          const pkg = packagesEl.querySelector(`.pkg[data-lives="${d.packageLives}"]`);
+          if (pkg) setPkgActive(pkg);
+        }
+      }
+
+      // Render PayPal buttons
+      renderPayPalButtons(user);
+    });
+
+    /**********************
+     * 4) PAYMENTS (IMPORTANT)
+     *
+     * Perché non basta PayPal.me?
+     * - Perché su un sito statico non puoi “sapere” se il pagamento è riuscito.
+     *
+     * Per rendere l’iscrizione valida SOLO dopo pagamento:
+     * - serve un backend (Firebase Functions) che crea/cattura l’ordine
+     * - e idealmente un webhook PayPal che conferma definitivamente.
+     *
+     * Qui sotto è già pronto il client che chiama due endpoint:
+     *   POST https://<TUO_DOMINIO_FUNZIONI>/paypalCreateOrder
+     *   POST https://<TUO_DOMINIO_FUNZIONI>/paypalCaptureOrder
+     **********************/
+
+     const PAYPAL_CREATE_URL  = "https://paypalcreateorder-sdmlsa4xrq-ew.a.run.app";
+     const PAYPAL_CAPTURE_URL = "https://paypalcaptureorder-sdmlsa4xrq-ew.a.run.app";
+     
+    function renderPayPalButtons(user){
+      if (!window.paypal || !el('paypalButtons')) return;
+
+      el('paypalButtons').innerHTML = "";
+
+      paypal.Buttons({
+        style: { layout: 'vertical' },
+
+        // 1) crea ordine lato server
+        createOrder: async () => {
+          const v = validateForm();
+          if (!v.ok) throw new Error(v.msg);
+
+          // salva bozza prima di creare l’ordine
+          await saveDraftProfile(user);
+
+          const res = await fetch(PAYPAL_CREATE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uid: user.uid,
+              teamName: teamName.value.trim(),
+              lives: selectedLives,
+              amountEUR: selectedPrice
+            })
+          });
+
+          if (!res.ok) throw new Error('Errore creazione ordine PayPal.');
+          const data = await res.json();
+          return data.orderID; // PayPal order id
+        },
+
+        // 2) cattura ordine lato server
+        onApprove: async (data) => {
+          const res = await fetch(PAYPAL_CAPTURE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: user.uid, orderID: data.orderID })
+          });
+
+          if (!res.ok) throw new Error('Pagamento non confermato.');
+          const out = await res.json();
+
+          if (out.status !== 'COMPLETED') throw new Error('Pagamento non completato.');
+
+          // A questo punto il server dovrebbe aver settato status=active su Firestore.
+          alert('Pagamento completato ✅ Iscrizione attivata.');
+          window.location.reload();
+        },
+
+        onError: (err) => {
+          console.error(err);
+          alert('Pagamento non riuscito o annullato.');
+        }
+      }).render('#paypalButtons');
+    }
+  </script>
+</body>
+</html>
