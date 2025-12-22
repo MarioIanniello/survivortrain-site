@@ -213,14 +213,12 @@
           </div>
         </div>
 
-        <div class="card">
-          <div class="row">
-            <span class="badge">Totale: <span id="total">—</span></span>
-            <button class="btn" id="saveDraft" type="button">Salva dati (bozza)</button>
-          </div>
-          <p class="help">
-            “Salva bozza” salva solo i dati in attesa pagamento. La tua iscrizione diventa attiva solo quando il pagamento va a buon fine.
-          </p>
+        <div class="row">
+          <span class="badge">Totale: <span id="total">—</span></span>
+        </div>
+        <p class="help">
+          Compila i dati e completa il pagamento qui sotto: l’iscrizione si attiva <strong>solo dopo pagamento riuscito</strong>.
+        </p>
         </div>
 
         <div class="card">
@@ -302,7 +300,7 @@
       selectedLives = Number(target.dataset.lives);
       selectedPrice = Number(target.dataset.price);
       total.textContent = `${selectedPrice}€ (Pacchetto: ${selectedLives} vite)`;
-      setPayStatus('Pronto: puoi completare il pagamento.');
+      setPayStatus('Pronto: scorri in basso e completa il pagamento.');
     }
 
     packagesEl.addEventListener('click', (e) => {
@@ -339,16 +337,7 @@
       }, { merge: true });
     }
 
-    el('saveDraft').addEventListener('click', async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      try{
-        await saveDraftProfile(user);
-        alert('Bozza salvata. Ora completa il pagamento per attivare l’iscrizione.');
-      }catch(err){
-        alert(err.message || 'Errore nel salvataggio bozza.');
-      }
-    });
+
 
     // Logout
     el('logoutLink').addEventListener('click', async (e) => {
@@ -484,7 +473,7 @@
       const v = validateForm();
       if (!v.ok){
         container.innerHTML = "";
-        setPayStatus(v.msg);
+        setPayStatus(v.msg + ' (poi comparirà il bottone PayPal).');
         return;
       }
 
