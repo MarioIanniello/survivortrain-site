@@ -215,24 +215,12 @@
 
         <div class="row">
           <span class="badge">Totale: <span id="total">—</span></span>
-        </div>
-        <p class="help">
-          Compila i dati e completa il pagamento qui sotto: l’iscrizione si attiva <strong>solo dopo pagamento riuscito</strong>.
-        </p>
 
-        <div class="card">
-          <span class="label">Pagamento</span>
-          <p>
-            Pagherai tramite <strong>PayPal</strong> (dove disponibile anche <strong>carta di credito</strong> e <strong>Apple Pay</strong> all’interno del checkout PayPal).
-          </p>
-
-          <!-- PayPal buttons mount point -->
-          <div id="paypalStatus" class="help" style="margin-bottom:10px;">Compila i dati per abilitare il pagamento.</div>
-          <div id="paypalButtons"></div>
-
-          <p class="help">
-            Importante (tecnico): per rendere “valida” l’iscrizione solo dopo pagamento, serve una verifica lato server (Firebase Functions / webhook). Qui sotto è già predisposto il flusso con chiamate a due endpoint.
-          </p>
+          <!-- PayPal (CTA principale) -->
+          <div style="display:flex; flex-direction:column; gap:8px; min-width:260px;">
+            <div id="paypalStatus" class="help" style="margin:0;">Compila i dati per abilitare il pagamento.</div>
+            <div id="paypalButtons"></div>
+          </div>
         </div>
       </div>
 
@@ -299,7 +287,7 @@
       selectedLives = Number(target.dataset.lives);
       selectedPrice = Number(target.dataset.price);
       total.textContent = `${selectedPrice}€ (Pacchetto: ${selectedLives} vite)`;
-      setPayStatus('Pronto: scorri in basso e completa il pagamento.');
+      setPayStatus('Pronto: completa il pagamento per attivare l’iscrizione.');
     }
 
     packagesEl.addEventListener('click', (e) => {
@@ -394,18 +382,8 @@
     });
 
     /**********************
-     * 4) PAYMENTS (IMPORTANT)
-     *
-     * Perché non basta PayPal.me?
-     * - Perché su un sito statico non puoi “sapere” se il pagamento è riuscito.
-     *
-     * Per rendere l’iscrizione valida SOLO dopo pagamento:
-     * - serve un backend (Firebase Functions) che crea/cattura l’ordine
-     * - e idealmente un webhook PayPal che conferma definitivamente.
-     *
-     * Qui sotto è già pronto il client che chiama due endpoint:
-     *   POST https://<TUO_DOMINIO_FUNZIONI>/paypalCreateOrder
-     *   POST https://<TUO_DOMINIO_FUNZIONI>/paypalCaptureOrder
+     * 4) PAYMENTS
+     * L’iscrizione diventa attiva solo dopo capture COMPLETED lato server.
      **********************/
 
      const PAYPAL_CREATE_URL  = "https://paypalcreateorder-sdmlsa4xrq-ew.a.run.app";
@@ -488,7 +466,7 @@
       }
 
       container.innerHTML = "";
-      setPayStatus('Pronto: completa il pagamento.');
+      setPayStatus('Pronto: clicca PayPal per pagare e attivare l’iscrizione.');
 
       // eslint-disable-next-line no-undef
       paypal.Buttons({
@@ -546,7 +524,7 @@
           if (out.status !== 'COMPLETED') throw new Error('Pagamento non completato.');
 
           alert('Pagamento completato ✅ Iscrizione attivata.');
-          window.location.reload();
+          window.location.href = 'area.html';
         },
 
         onCancel: () => {
