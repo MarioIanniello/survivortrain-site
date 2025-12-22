@@ -134,6 +134,10 @@
     .btn:hover{ opacity: 1; background: rgba(255,255,255,0.12); }
 
     .hidden{ display:none !important; }
+    .pay-inline{ max-width: 340px; }
+@media (max-width:520px){
+  .pay-inline{ width: 100%; max-width: none; }
+}
 
     /* Mobile */
     @media (max-width:520px){
@@ -147,6 +151,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- PayPal JS SDK (Sandbox) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AR6EoR2SKgGz2MRRzEJYssWG-VHhXkkY4tAKISSsZT3YWVCdvWNVfj6YxGVa2dl_4o8K3F9pqUUa5Y2n&currency=EUR&intent=capture&components=buttons"></script>
 
 </head>
 
@@ -215,11 +221,10 @@
 
         <div class="row">
           <span class="badge">Totale: <span id="total">—</span></span>
-
-          <!-- PayPal (CTA principale) -->
-          <div style="display:flex; flex-direction:column; gap:8px; min-width:260px;">
-            <div id="paypalStatus" class="help" style="margin:0;">Compila i dati per abilitare il pagamento.</div>
-            <div id="paypalButtons"></div>
+        
+          <div class="pay-inline" style="display:flex; flex-direction:column; gap:6px; min-width:260px;">
+            <div id="paypal-button-container"></div>
+            <span id="payInlineStatus" class="help">Compila i dati per abilitare il pagamento.</span>
           </div>
         </div>
       </div>
@@ -280,6 +285,7 @@
     const packagesEl = el('packages');
     let selectedLives = null;
     let selectedPrice = null;
+    total.textContent = '—';
 
     function setPkgActive(target){
       [...packagesEl.querySelectorAll('.pkg')].forEach(p => p.classList.remove('active'));
@@ -287,7 +293,8 @@
       selectedLives = Number(target.dataset.lives);
       selectedPrice = Number(target.dataset.price);
       total.textContent = `${selectedPrice}€ (Pacchetto: ${selectedLives} vite)`;
-      setPayStatus('Pronto: completa il pagamento per attivare l’iscrizione.');
+      // Update CTA state
+      refreshPayUI();
     }
 
     packagesEl.addEventListener('click', (e) => {
@@ -376,174 +383,133 @@
         }
       }
 
-      // Render PayPal buttons
       renderPayPalButtons(user);
-      wireRerender(user);
+refreshPayUI();
+teamName.addEventListener('input', refreshPayUI);
+packagesEl.addEventListener('click', refreshPayUI);
     });
 
-    /**********************
-     * 4) PAYMENTS
-     * L’iscrizione diventa attiva solo dopo capture COMPLETED lato server.
-     **********************/
+/**********************
+ * 4) PAYMENTS (PayPal Buttons)
+ * L’iscrizione diventa attiva solo dopo capture COMPLETED lato server.
+ **********************/
 
-     const PAYPAL_CREATE_URL  = "https://paypalcreateorder-sdmlsa4xrq-ew.a.run.app";
-     const PAYPAL_CAPTURE_URL = "https://paypalcaptureorder-sdmlsa4xrq-ew.a.run.app";
-     const PAYPAL_CLIENT_ID   = "AR6EoR2SKgGz2MRRzEJYssWG-VHhXkkY4tAKISSsZT3YWVCdvWNVfj6YxGVa2dl_4o8K3F9pqUUa5Y2n";
-     const PAYPAL_CURRENCY    = "EUR";
+ const PAYPAL_CREATE_URL  = "https://paypalcreateorder-sdmlsa4xrq-ew.a.run.app";
+const PAYPAL_CAPTURE_URL = "https://paypalcaptureorder-sdmlsa4xrq-ew.a.run.app";
 
-     const paypalStatus = el('paypalStatus');
+const payInlineStatus = el('payInlineStatus');
 
-     function setPayStatus(msg){
-       if (paypalStatus) paypalStatus.textContent = msg;
-     }
+function setPayStatus(msg){
+  if (payInlineStatus) payInlineStatus.textContent = msg;
+}
 
-     function pageBase(){
-       return window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-     }
+function setButtonsEnabled(enabled){
+  const container = document.getElementById('paypal-button-container');
+  if (!container) return;
+  container.style.opacity = enabled ? '1' : '0.55';
+  container.style.pointerEvents = enabled ? 'auto' : 'none';
+}
 
-     function loadPayPalSdk(){
-       return new Promise((resolve, reject) => {
-         if (window.paypal && window.paypal.Buttons) return resolve();
+function refreshPayUI(){
+  const v = validateForm();
+  if (!v.ok){
+    setPayStatus(v.msg);
+    setButtonsEnabled(false);
+    return;
+  }
+  setPayStatus('Pronto: completa il pagamento per attivare l’iscrizione.');
+  setButtonsEnabled(true);
+}
 
-         // Avoid double-inject
-         if (document.getElementById('paypal-sdk')) {
-           const t0 = Date.now();
-           const timer = setInterval(() => {
-             if (window.paypal && window.paypal.Buttons){
-               clearInterval(timer);
-               resolve();
-             } else if (Date.now() - t0 > 12000){
-               clearInterval(timer);
-               reject(new Error('Timeout caricamento PayPal SDK'));
-             }
-           }, 200);
-           return;
-         }
+function renderPayPalButtons(user){
+  const container = document.getElementById('paypal-button-container');
+  if (!container) return;
 
-         const s = document.createElement('script');
-         s.id = 'paypal-sdk';
-         s.async = true;
-         s.defer = true;
+  // Prevent duplicate renders
+  if (container.dataset.rendered === '1') return;
+  container.dataset.rendered = '1';
 
-         // Important: components=buttons,funding-eligibility helps wallet options (card/Apple Pay when eligible)
-         const params = new URLSearchParams({
-           'client-id': PAYPAL_CLIENT_ID,
-           'currency': PAYPAL_CURRENCY,
-           'intent': 'capture',
-           'components': 'buttons,funding-eligibility'
-         });
-         s.src = `https://www.paypal.com/sdk/js?${params.toString()}`;
+  if (typeof paypal === 'undefined' || !paypal.Buttons){
+    setPayStatus('PayPal non disponibile: SDK non caricato.');
+    setButtonsEnabled(false);
+    return;
+  }
 
-         s.onload = () => {
-           if (window.paypal && window.paypal.Buttons) resolve();
-           else reject(new Error('PayPal SDK caricato ma non disponibile'));
-         };
-         s.onerror = () => reject(new Error('Errore caricamento PayPal SDK'));
-         document.head.appendChild(s);
-       });
-     }
+  paypal.Buttons({
+    style: { layout: 'vertical', label: 'paypal' },
 
-    async function renderPayPalButtons(user){
-      const container = el('paypalButtons');
-      if (!container) return;
+    onInit: function(){
+      refreshPayUI();
+    },
 
+    createOrder: async function(){
       const v = validateForm();
       if (!v.ok){
-        container.innerHTML = "";
-        setPayStatus(v.msg + ' (poi comparirà il bottone PayPal).');
-        return;
+        setPayStatus(v.msg);
+        throw new Error(v.msg);
       }
 
-      setPayStatus('Caricamento pagamento…');
+      setPayStatus('Preparazione pagamento…');
 
+      const res = await fetch(PAYPAL_CREATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: user.uid,
+          teamName: teamName.value.trim(),
+          packageId: String(selectedLives),
+          amountEUR: Number(selectedPrice)
+        })
+      });
+
+      if (!res.ok){
+        const t = await res.text().catch(() => '');
+        throw new Error(`Errore creazione ordine PayPal. ${t}`);
+      }
+
+      const out = await res.json();
+      const orderID = out.orderID || out.orderId;
+      if (!orderID) throw new Error('Risposta PayPal non valida (orderID mancante).');
+      return orderID;
+    },
+
+    onApprove: async function(data){
       try{
-        await loadPayPalSdk();
+        setPayStatus('Conferma pagamento…');
+
+        const res = await fetch(PAYPAL_CAPTURE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: user.uid, orderID: data.orderID })
+        });
+
+        if (!res.ok){
+          const t = await res.text().catch(() => '');
+          throw new Error(`Pagamento non confermato. ${t}`);
+        }
+
+        const out = await res.json();
+        if (out.status !== 'COMPLETED') throw new Error('Pagamento non completato.');
+
+        setPayStatus('Pagamento completato ✅ Iscrizione attivata.');
+        window.location.href = 'area.html?v=' + Date.now();
       }catch(err){
         console.error(err);
-        container.innerHTML = "";
-        setPayStatus('Impossibile caricare PayPal. Riprova (o apri in Safari/Modalità privata).');
-        return;
+        setPayStatus('Pagamento non completato. Puoi riprovare.');
+        alert(err.message || 'Pagamento non completato.');
       }
+    },
 
-      container.innerHTML = "";
-      setPayStatus('Pronto: clicca PayPal per pagare e attivare l’iscrizione.');
+    onCancel: function(){
+      setPayStatus('Pagamento annullato. Puoi riprovare quando vuoi.');
+    },
 
-      // eslint-disable-next-line no-undef
-      paypal.Buttons({
-        style: { layout: 'vertical' },
-
-        // 1) crea ordine lato server
-        createOrder: async () => {
-          const vv = validateForm();
-          if (!vv.ok) throw new Error(vv.msg);
-
-          // salva bozza prima di creare l’ordine
-          await saveDraftProfile(user);
-
-          const res = await fetch(PAYPAL_CREATE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              uid: user.uid,
-              teamName: teamName.value.trim(),
-              lives: selectedLives,
-              amountEUR: selectedPrice,
-              siteBase: pageBase()
-            })
-          });
-
-          if (!res.ok){
-            const t = await res.text().catch(() => '');
-            throw new Error(`Errore creazione ordine PayPal. ${t}`);
-          }
-          const data = await res.json();
-          if (!data.orderID) throw new Error('Risposta PayPal non valida (orderID mancante).');
-          return data.orderID;
-        },
-
-        // 2) cattura ordine lato server
-        onApprove: async (data) => {
-          setPayStatus('Conferma pagamento…');
-
-          const res = await fetch(PAYPAL_CAPTURE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              uid: user.uid,
-              orderID: data.orderID,
-              siteBase: pageBase()
-            })
-          });
-
-          if (!res.ok){
-            const t = await res.text().catch(() => '');
-            throw new Error(`Pagamento non confermato. ${t}`);
-          }
-          const out = await res.json();
-
-          if (out.status !== 'COMPLETED') throw new Error('Pagamento non completato.');
-
-          alert('Pagamento completato ✅ Iscrizione attivata.');
-          window.location.href = 'area.html';
-        },
-
-        onCancel: () => {
-          setPayStatus('Pagamento annullato. Puoi riprovare quando vuoi.');
-        },
-
-        onError: (err) => {
-          console.error(err);
-          setPayStatus('Pagamento non riuscito. Riprova o cambia browser.');
-          alert('Pagamento non riuscito o annullato.');
-        }
-      }).render('#paypalButtons');
+    onError: function(err){
+      console.error(err);
+      setPayStatus('Errore PayPal. Riprova.');
     }
-
-    // Re-render PayPal buttons whenever inputs change
-    function wireRerender(user){
-      teamName.addEventListener('input', () => renderPayPalButtons(user));
-      packagesEl.addEventListener('click', () => renderPayPalButtons(user));
-    }
+  }).render('#paypal-button-container');
+}
   </script>
 </body>
 </html>
