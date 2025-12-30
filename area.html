@@ -289,21 +289,33 @@
         },
 
         onInit: function(data, actions){
-          paypalActions = actions;
-          actions.disable();      // default OFF
-          updatePayUI();          // enable when valid
-        },
+  paypalActions = actions;
+
+  // NON disabilitare qui
+  // lasciamo che sia onClick a validare
+},
 
         // IMPORTANT: blocca PRIMA di entrare nel flusso PayPal (evita "lucchetto" appeso)
         onClick: function(data, actions){
-          const v = validateForm();
-          if (!v.ok){
-            payMsg.textContent = v.msg;
-            return actions.reject();
-          }
-          payMsg.textContent = '';
-          return actions.resolve();
-        },
+  const nameOk = teamName.value.trim().length >= 3;
+  const pkgOk = !!selectedLives;
+
+  if (!currentUser){
+    payMsg.textContent = 'Devi essere loggato per pagare.';
+    return actions.reject();
+  }
+  if (!nameOk){
+    payMsg.textContent = 'Inserisci un nome squadra valido.';
+    return actions.reject();
+  }
+  if (!pkgOk){
+    payMsg.textContent = 'Seleziona un pacchetto vite.';
+    return actions.reject();
+  }
+
+  payMsg.textContent = 'Apertura PayPal…';
+  return actions.resolve(); // 🔥 QUESTO SBLOCCA createOrder
+},
 
         createOrder: async function(){
           try{
