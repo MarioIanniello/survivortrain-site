@@ -134,10 +134,28 @@
     .btn:hover{ opacity: 1; background: rgba(255,255,255,0.12); }
 
     .hidden{ display:none !important; }
-    .pay-inline{ max-width: 340px; }
-@media (max-width:520px){
-  .pay-inline{ width: 100%; max-width: none; }
-}
+    .pay-inline{
+      width: 100%;
+      max-width: 360px;
+      min-height: 48px; /* keeps space even before PayPal renders */
+    }
+    .paypal-fallback{
+      display:none;
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      font-weight: 900;
+      cursor: pointer;
+      text-align:center;
+    }
+    .paypal-fallback:hover{ background: rgba(255,255,255,0.14); }
+
+    @media (max-width:520px){
+      .pay-inline{ max-width: none; }
+    }
 
     /* Mobile */
     @media (max-width:520px){
@@ -219,12 +237,13 @@
           </div>
         </div>
 
-        <div class="row" style="flex-direction:column; align-items:flex-start;">
+        <div class="row" id="payRow">
           <span class="badge">Totale: <span id="total">—</span></span>
 
-          <div class="pay-inline" style="display:flex; flex-direction:column; gap:8px; width:100%; max-width:420px; margin-top:10px;">
+          <div class="pay-inline">
             <div id="paypal-button-container"></div>
-            <span id="payInlineStatus" class="help">Compila i dati per abilitare il pagamento.</span>
+            <button id="paypalFallbackBtn" class="paypal-fallback" type="button">Paga con PayPal</button>
+            <div id="payInlineStatus" class="help">Compila i dati per abilitare il pagamento.</div>
           </div>
         </div>
       </div>
@@ -405,9 +424,16 @@ function setPayStatus(msg){
 
 function setButtonsEnabled(enabled){
   const container = document.getElementById('paypal-button-container');
-  if (!container) return;
-  container.style.opacity = enabled ? '1' : '0.55';
-  container.style.pointerEvents = enabled ? 'auto' : 'none';
+  const fb = document.getElementById('paypalFallbackBtn');
+  if (container){
+    container.style.opacity = enabled ? '1' : '0.55';
+    container.style.pointerEvents = enabled ? 'auto' : 'none';
+  }
+  if (fb){
+    fb.disabled = !enabled;
+    fb.style.opacity = enabled ? '1' : '0.55';
+    fb.style.pointerEvents = enabled ? 'auto' : 'none';
+  }
 }
 
 function refreshPayUI(){
@@ -429,11 +455,17 @@ function renderPayPalButtons(user){
   if (container.dataset.rendered === '1') return;
   container.dataset.rendered = '1';
 
+  const fb = document.getElementById('paypalFallbackBtn');
+
   if (typeof paypal === 'undefined' || !paypal.Buttons){
-    setPayStatus('PayPal non disponibile: SDK non caricato.');
+    setPayStatus('PayPal non disponibile in questo momento. Tocca “Paga con PayPal”.');
+    if (fb) fb.style.display = 'block';
     setButtonsEnabled(false);
     return;
   }
+
+  // SDK OK: hide fallback
+  if (fb) fb.style.display = 'none';
 
   paypal.Buttons({
     style: { layout: 'vertical', label: 'paypal' },
@@ -457,8 +489,7 @@ function renderPayPalButtons(user){
         body: JSON.stringify({
           uid: user.uid,
           teamName: teamName.value.trim(),
-          packageId: String(selectedLives),
-          amountEUR: Number(selectedPrice)
+          packageId: String(selectedLives)
         })
       });
 
@@ -509,6 +540,49 @@ function renderPayPalButtons(user){
       setPayStatus('Errore PayPal. Riprova.');
     }
   }).render('#paypal-button-container');
+
+  // Fallback: if a browser blocks the PayPal button iframe, offer a direct redirect flow.
+  const fb2 = document.getElementById('paypalFallbackBtn');
+  if (fb2 && !fb2.dataset.bound){
+    fb2.dataset.bound = '1';
+    fb2.addEventListener('click', async () => {
+      try{
+        const v = validateForm();
+        if (!v.ok){
+          setPayStatus(v.msg);
+          return;
+        }
+        setPayStatus('Apertura PayPal…');
+
+        const res = await fetch(PAYPAL_CREATE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            uid: user.uid,
+            teamName: teamName.value.trim(),
+            packageId: String(selectedLives)
+          })
+        });
+        if (!res.ok){
+          const t = await res.text().catch(()=>'');
+          throw new Error(`Errore creazione ordine PayPal. ${t}`);
+        }
+        const out = await res.json();
+        const orderID = out.orderID || out.orderId;
+        if (!orderID) throw new Error('OrderID mancante.');
+
+        // Redirect to PayPal checkout (works even without the JS SDK button rendering)
+        const env = (out.env || '').toLowerCase();
+        const isSandbox = env ? (env === 'sandbox') : true;
+        const base = isSandbox ? 'https://www.sandbox.paypal.com/checkoutnow?token=' : 'https://www.paypal.com/checkoutnow?token=';
+        window.location.href = base + encodeURIComponent(orderID);
+      }catch(e){
+        console.error(e);
+        alert(e.message || 'Errore PayPal');
+        setPayStatus('Errore PayPal. Riprova.');
+      }
+    });
+  }
 }
   </script>
 </body>
